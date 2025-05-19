@@ -17,6 +17,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     // Implementation will go here
   };
 
+  // Register function to create a new account
+  const register = async (username: string, email: string, password: string): Promise<void> => {
+    // Implementation will go here
+    // This function should handle the registration process
+    // and might involve API calls to create a new user account
+  };
+
   // Logout function (empty implementation as requested)
   const logout = () => {
     // Implementation will go here
@@ -34,6 +41,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     isLoading,
     token,
     login,
+    register,
     logout,
     updateUser,
   };
