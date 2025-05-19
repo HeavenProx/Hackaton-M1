@@ -6,12 +6,17 @@ import App from "./App.tsx";
 import { Provider } from "./provider.tsx";
 import "@/styles/globals.css";
 
+import { HeroUIProvider } from "@heroui/react"
+
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <Provider>
-        <App />
-      </Provider>
+      <HeroUIProvider>
+        <Provider>
+          <App />
+        </Provider>
+      </HeroUIProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );
