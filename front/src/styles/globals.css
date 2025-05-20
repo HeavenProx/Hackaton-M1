@@ -2,16 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-.bubble-user {
-  background-color: #1f2937;
-  color: white;
+.bg-10 {
+  background-color: rgba(230, 230, 230, 0.5);
 }
 
-.message-bot {
-  background-color: #f3f4f6;
-}
-
-.chat-button {
-  background-color: #e5e7eb;
-  color: white;
+.bg-30 {
+  background-color: rgba(144, 142, 142, 0.5);
 }

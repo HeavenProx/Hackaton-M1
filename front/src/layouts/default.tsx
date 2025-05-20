@@ -17,11 +17,11 @@ export default function DefaultLayout({
         <Link
           isExternal
           className="flex items-center gap-1 text-current"
-          href="https://heroui.com"
-          title="heroui.com homepage"
+          href="https://www.sciences-u-lyon.fr"
+          title="Sciences-U homepage"
         >
           <span className="text-default-600">Powered by</span>
-          <p className="text-primary">HeroUI</p>
+          <p className="text-primary">JVHLL</p>
         </Link>
       </footer>
     </div>
