@@ -8,17 +8,20 @@ interface GarageInfoCardProps {
   dealership: Dealership;
   onSelect?: (dealership: Dealership) => void;
   isSelected?: boolean;
+  cardRef?: React.RefObject<HTMLDivElement>;
 }
 
-export default function GarageInfoCard({ 
-  dealership, 
-  onSelect, 
-  isSelected = false 
+export default function GarageInfoCard({
+  dealership,
+  onSelect,
+  isSelected = false,
+  cardRef,
 }: GarageInfoCardProps) {
   const { dealership_name, city, address, zipcode } = dealership;
 
   return (
     <Card
+      ref={cardRef}
       className={`min-w-[250px] min-h-[200px] ${isSelected ? "border-2 border-primary" : ""}`}
       isPressable={!!onSelect}
       shadow="sm"

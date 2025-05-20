@@ -19,4 +19,5 @@ export type GarageInfoCardProps = {
   dealership: Dealership;
   onSelect?: (dealership: Dealership) => void;
   isSelected?: boolean;
+  cardRef?: React.RefObject<HTMLDivElement>;
 };

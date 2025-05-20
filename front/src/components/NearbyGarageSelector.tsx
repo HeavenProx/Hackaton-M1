@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, createRef } from "react";
 import { Button } from "@heroui/button";
 import {
   Modal,
@@ -22,6 +22,8 @@ export default function NearbyGarageSelector({
   const { isOpen, onOpenChange } = disclosure;
   const [selectedDealership, setSelectedDealership] =
     useState<Dealership | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef(dealerships.map(() => createRef<HTMLDivElement>()));
 
   const handleDealershipSelect = (dealership: Dealership) => {
     setSelectedDealership(dealership);
@@ -33,14 +35,40 @@ export default function NearbyGarageSelector({
     onOpenChange();
   };
 
+  // Scroll to selected dealership card
+  useEffect(() => {
+    if (selectedDealership && scrollContainerRef.current) {
+      const selectedIndex = dealerships.findIndex(
+        (d) => d.dealership_name === selectedDealership.dealership_name,
+      );
+
+      if (selectedIndex !== -1 && cardRefs.current[selectedIndex].current) {
+        const card = cardRefs.current[selectedIndex].current;
+        const scrollContainer = scrollContainerRef.current;
+
+        if (card && scrollContainer) {
+          const cardLeft = card.offsetLeft;
+          const containerWidth = scrollContainer.clientWidth;
+          const cardWidth = card.offsetWidth;
+
+          // Center the card in the scroll container
+          scrollContainer.scrollTo({
+            left: cardLeft - containerWidth / 2 + cardWidth / 2,
+            behavior: "smooth",
+          });
+        }
+      }
+    }
+  }, [selectedDealership]);
+
   return (
     <>
       <Modal
         backdrop="blur"
         isOpen={isOpen}
+        scrollBehavior="inside"
         size="5xl"
         onOpenChange={onOpenChange}
-        scrollBehavior="inside"
       >
         <ModalContent>
           {(onClose) => (
@@ -61,11 +89,15 @@ export default function NearbyGarageSelector({
                       : "Sélectionnez un garage sur la carte ou dans la liste ci-dessous"}
                   </h3>
 
-                  <ScrollShadow orientation="horizontal">
+                  <ScrollShadow
+                    ref={scrollContainerRef}
+                    orientation="horizontal"
+                  >
                     <div className="flex gap-4 py-2 pb-4">
-                      {dealerships.map((dealership) => (
+                      {dealerships.map((dealership, index) => (
                         <GarageInfoCard
                           key={dealership.dealership_name}
+                          cardRef={cardRefs.current[index]}
                           dealership={dealership}
                           isSelected={
                             selectedDealership?.dealership_name ===
@@ -84,8 +116,8 @@ export default function NearbyGarageSelector({
                 </Button>
                 <Button
                   color="primary"
-                  onPress={handleConfirm}
                   isDisabled={!selectedDealership}
+                  onPress={handleConfirm}
                 >
                   Valider
                 </Button>
