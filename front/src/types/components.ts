@@ -1,3 +1,5 @@
+import { Dealership } from "./dealership";
+
 export type ModalDisclosureProps = {
   isOpen: boolean;
   onOpen: () => void;
@@ -6,4 +8,15 @@ export type ModalDisclosureProps = {
 
 export type NearbyGarageSelectorProps = {
   disclosure: ModalDisclosureProps;
+};
+
+export type MapBoxContainerProps = {
+  selectedDealership?: Dealership | null;
+  onDealershipSelect?: (dealership: Dealership) => void;
+};
+
+export type GarageInfoCardProps = {
+  dealership: Dealership;
+  onSelect?: (dealership: Dealership) => void;
+  isSelected?: boolean;
 };

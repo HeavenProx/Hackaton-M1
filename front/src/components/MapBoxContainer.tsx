@@ -2,10 +2,21 @@ import { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+import { dealerships } from "@/data/dealerships";
+import { Dealership } from "@/types/dealership";
 
-export default function MapBoxContainer() {
+interface MapBoxContainerProps {
+  selectedDealership?: Dealership | null;
+  onDealershipSelect?: (dealership: Dealership) => void;
+}
+
+export default function MapBoxContainer({
+  selectedDealership,
+  onDealershipSelect,
+}: MapBoxContainerProps) {
   const mapRef = useRef<mapboxgl.Map | undefined>(undefined);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const markersRef = useRef<{ [key: string]: mapboxgl.Marker }>({});
 
   useEffect(() => {
     if (!mapContainerRef.current) {
@@ -14,25 +25,32 @@ export default function MapBoxContainer() {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      center: [4.809382, 45.784958], // [lng, lat]
-      zoom: 10,
+      center: [2.213749, 46.227638], // Center of France
+      zoom: 5,
     });
 
     // Add markers for each dealership once the map is loaded
     mapRef.current.on("load", () => {
       dealerships.forEach((dealership) => {
-        const marker = new mapboxgl.Marker()
+        const marker = new mapboxgl.Marker({
+          color:
+            selectedDealership?.dealership_name === dealership.dealership_name
+              ? "#0072F5"
+              : "#666666",
+        })
           .setLngLat([dealership.longitude, dealership.latitude])
           .addTo(mapRef.current as mapboxgl.Map);
+
+        markersRef.current[dealership.dealership_name] = marker;
 
         const el = marker.getElement();
 
         if (el) {
           // Add click event listener to the marker element
           el.addEventListener("click", () => {
-            console.log(
-              `Clicked on dealership: ${dealership.dealership_name}, Address: ${dealership.address}, City: ${dealership.city}, Zipcode: ${dealership.zipcode}`
-            );
+            if (onDealershipSelect) {
+              onDealershipSelect(dealership);
+            }
           });
         }
       });
@@ -45,205 +63,56 @@ export default function MapBoxContainer() {
     };
   }, []);
 
+  // Update marker colors when selected dealership changes
+  useEffect(() => {
+    Object.keys(markersRef.current).forEach((name) => {
+      const marker = markersRef.current[name];
+      const color =
+        selectedDealership?.dealership_name === name ? "#0072F5" : "#666666";
+
+      if (marker) {
+        // Remove the previous marker
+        marker.remove();
+
+        // Create a new marker with the updated color
+        const dealership = dealerships.find((d) => d.dealership_name === name);
+
+        if (dealership && mapRef.current) {
+          const newMarker = new mapboxgl.Marker({
+            color: color,
+          })
+            .setLngLat([dealership.longitude, dealership.latitude])
+            .addTo(mapRef.current);
+
+          // Update the reference
+          markersRef.current[name] = newMarker;
+
+          // Re-add click event
+          const el = newMarker.getElement();
+
+          if (el && onDealershipSelect) {
+            el.addEventListener("click", () => {
+              onDealershipSelect(dealership);
+            });
+          }
+        }
+      }
+    });
+
+    // Center map on selected dealership if one is selected
+    if (selectedDealership && mapRef.current) {
+      mapRef.current.flyTo({
+        center: [selectedDealership.longitude, selectedDealership.latitude],
+        zoom: 12,
+        essential: true,
+      });
+    }
+  }, [selectedDealership, onDealershipSelect]);
+
   return (
     <div
       ref={mapContainerRef}
-      className="rounded-lg overflow-hidden h-[80vh]"
+      className="rounded-lg overflow-hidden h-[50vh]"
     />
   );
 }
-
-const dealerships = [
-  {
-    dealership_name: "ENVERGURE LA ROCHELLE",
-    city: "Puilboreau",
-    address: "48 Rue du 8 Mai 1945",
-    zipcode: "17138",
-    latitude: 46.179446,
-    longitude: -1.104911,
-  },
-  {
-    dealership_name: "ROYAL SA MEYLAN",
-    city: "Meylan",
-    address: "1 bis Boulevard des Alpes",
-    zipcode: "38240",
-    latitude: 45.202648,
-    longitude: 5.766119,
-  },
-  {
-    dealership_name: "PAYS DE LOIRE AUTOMOBILES NANTES",
-    city: "Saint-Herblain",
-    address: "104 Avenue des Lions",
-    zipcode: "44800",
-    latitude: 47.249614,
-    longitude: -1.619745,
-  },
-  {
-    dealership_name: "ALTITUDE 69 LYON",
-    city: "Lyon",
-    address: "6 Rue Joannès Carret",
-    zipcode: "69009",
-    latitude: 45.784958,
-    longitude: 4.809382,
-  },
-  {
-    dealership_name: "INDIGO LES ULIS",
-    city: "Villebon-sur-Yvette",
-    address: "8 Avenue du Québec",
-    zipcode: "91140",
-    latitude: 48.688082,
-    longitude: 2.208137,
-  },
-  {
-    dealership_name: "INDIGO JUVISY",
-    city: "Juvisy-sur-Orge",
-    address: "1 Avenue de la cour de France",
-    zipcode: "91260",
-    latitude: 48.687704,
-    longitude: 2.371576,
-  },
-  {
-    dealership_name: "INDIGO LISSES",
-    city: "Lisses",
-    address: "2 Route de Villabé D260",
-    zipcode: "91090",
-    latitude: 48.600265,
-    longitude: 2.440535,
-  },
-  {
-    dealership_name: "L'ESPACE H STRASBOURG",
-    city: "Hoenheim",
-    address: "2 Rue Emile Mathis",
-    zipcode: "67800",
-    latitude: 48.621922,
-    longitude: 7.727332,
-  },
-  {
-    dealership_name: "HORIZON CH. POZZI PARIS",
-    city: "Levallois-Perret",
-    address: "40 Rue Aristide Briand",
-    zipcode: "92300",
-    latitude: 48.890609,
-    longitude: 2.284703,
-  },
-  {
-    dealership_name: "BAYERN AUTO SPORT CALAIS",
-    city: "Coquelles",
-    address: "Place de Cantorbery",
-    zipcode: "62231",
-    latitude: 50.937769,
-    longitude: 1.808744,
-  },
-  {
-    dealership_name: "BAYERN AUTO SPORT DUNKERQUE",
-    city: "Coudekerque-Branche CEDEX",
-    address: "48bis Route de Bergues",
-    zipcode: "59210",
-    latitude: 51.007352,
-    longitude: 2.38073,
-  },
-  {
-    dealership_name: "BAYERN AUTO SPORT ST OMER",
-    city: "Arques",
-    address: "2 Rue Yves Montand",
-    zipcode: "62510",
-    latitude: 50.73055,
-    longitude: 2.278355,
-  },
-  {
-    dealership_name: "INDIGO BALLAINVILLIERS",
-    city: "Ballainvilliers",
-    address: "54 RN 20",
-    zipcode: "91160",
-    latitude: 48.663694,
-    longitude: 2.278068,
-  },
-  {
-    dealership_name: "BYmyCAR BAC CHENNEVIERES",
-    city: "Chennevières-sur-Marne",
-    address: "2 et 4 Rue Lavoisier",
-    zipcode: "94430",
-    latitude: 48.796133,
-    longitude: 2.546907,
-  },
-  {
-    dealership_name: "BYmyCAR PARIS BIZOT",
-    city: "Paris",
-    address: "101 avenue Michel Bizot",
-    zipcode: "75012",
-    latitude: 48.83881760289072,
-    longitude: 2.403964907966163,
-  },
-  {
-    dealership_name: "ESPACE BERTEAUX DREUX",
-    city: "Vernouillet",
-    address: "7 Boulevard de l'Europe",
-    zipcode: "28500",
-    latitude: 48.720193,
-    longitude: 1.370856,
-  },
-  {
-    dealership_name: "FOUREL VALENCE",
-    city: "Valence",
-    address: "Route de Beauvallon",
-    zipcode: "26000",
-    latitude: 44.902009,
-    longitude: 4.885867,
-  },
-  {
-    dealership_name: "BYmyCAR 77 MARNE LA VALLEE",
-    city: "Saint-Thibault-des-Vignes",
-    address: "31 bis Avenue de Saint-Germain des Noyers",
-    zipcode: "77400",
-    latitude: 48.860175,
-    longitude: 2.6719,
-  },
-  {
-    dealership_name: "HORIZON LA DEFENSE",
-    city: "Nanterre",
-    address: "33 Rue d'Arras",
-    zipcode: "92000",
-    latitude: 48.900678171904744,
-    longitude: 2.2250071587957443,
-  },
-  {
-    dealership_name: "HORIZON ST-OUEN-L'AUMONE",
-    city: "Saint-Ouen-l'Aumône",
-    address: "15 rue Louis Delage",
-    zipcode: "95310",
-    latitude: 49.03441,
-    longitude: 2.119187,
-  },
-  {
-    dealership_name: "HORIZON ST-GRATIEN",
-    city: "Saint-Gratien",
-    address: "51 Boulevard du Maréchal Foch",
-    zipcode: "95210",
-    latitude: 48.964209,
-    longitude: 2.289541,
-  },
-  {
-    dealership_name: "EDENAUTO PREMIUM TARBES",
-    city: "Tarbes",
-    address: "10 Rue Patrick Baudry",
-    zipcode: "65000",
-    latitude: 43.21953,
-    longitude: 0.090015,
-  },
-  {
-    dealership_name: "EDENAUTO PREMIUM PAU",
-    city: "Lescar",
-    address: "Avenue Santos Dumont",
-    zipcode: "64230",
-    latitude: 43.319873,
-    longitude: -0.422481,
-  },
-  {
-    dealership_name: "BMS MANTES",
-    city: "Buchelay",
-    address: "1 Avenue de la Garonne",
-    zipcode: "78200",
-    latitude: 48.989828,
-    longitude: 1.676695,
-  },
-];
