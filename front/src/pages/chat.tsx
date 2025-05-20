@@ -32,7 +32,7 @@ export default function ChatPage() {
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col items-center justify-center py-8 h-[90vh]">
+      <section className="flex flex-col items-center justify-center py-3 h-[90vh]">
         <div className="inline-block max-w-lg text-center justify-center">
           <h1 className="{title()} text-xl">Notre assistant va s'occuper de vous</h1>
         </div>
@@ -45,7 +45,7 @@ export default function ChatPage() {
                 key={i}
                 className={`max-w-[75%] px-4 py-2 rounded-lg text-sm whitespace-pre-line ${
                     msg.from === "user"
-                    ? "bg-white/20 text-white self-end ml-auto" 
+                    ? "bg-white/10 text-white self-end ml-auto" 
                     : "text-foreground bg-muted self-start"
                 }`}
                 >
@@ -66,7 +66,7 @@ export default function ChatPage() {
             />
             <button
               onClick={sendMessage}
-              className="bg-muted text-white px-4 py-2 rounded-lg hover:bg-white/30 transition"
+              className="chatButton px-4 py-2 rounded-lg hover:bg-white/30 transition"
             >
               Envoyer
             </button>
