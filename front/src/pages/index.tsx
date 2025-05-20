@@ -4,8 +4,10 @@ import { useDisclosure } from "@heroui/modal";
 import { title, subtitle } from "@/components/primitives";
 import DefaultLayout from "@/layouts/default";
 import NearbyGarageSelector from "@/components/NearbyGarageSelector";
+import { useUser } from "@/contexts/UserContext";
 
 export default function IndexPage() {
+  const {user} = useUser();
   const disclosure = useDisclosure();
 
   return (
@@ -23,11 +25,13 @@ export default function IndexPage() {
           </div>
         </div>
       </section>
+
       <div className="flex flex-col items-center justify-center">
         <Button color="primary" onPress={disclosure.onOpen}>
           open NearbyGarageSelector
         </Button>
       </div>
+      
       <NearbyGarageSelector disclosure={disclosure} />
     </DefaultLayout>
   );

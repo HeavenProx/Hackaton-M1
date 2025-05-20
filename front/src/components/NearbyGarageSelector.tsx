@@ -11,6 +11,7 @@ import { ScrollShadow } from "@heroui/scroll-shadow";
 
 import MapBoxContainer from "./MapBoxContainer";
 import GarageInfoCard from "./GarageInfoCard";
+import LocationSearch from "./LocationSearch";
 
 import { NearbyGarageSelectorProps } from "@/types/components";
 import { Dealership } from "@/types/dealership";
@@ -22,6 +23,11 @@ export default function NearbyGarageSelector({
   const { isOpen, onOpenChange } = disclosure;
   const [selectedDealership, setSelectedDealership] =
     useState<Dealership | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<{
+    name: string;
+    longitude: number;
+    latitude: number;
+  } | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef(dealerships.map(() => createRef<HTMLDivElement>()));
 
@@ -29,9 +35,20 @@ export default function NearbyGarageSelector({
     setSelectedDealership(dealership);
   };
 
+  const handleLocationSelect = (location: {
+    name: string;
+    longitude: number;
+    latitude: number;
+  }) => {
+    setSelectedLocation(location);
+    // Reset selected dealership when location changes
+    setSelectedDealership(null);
+  };
+
   const handleConfirm = () => {
     // Here you would typically do something with the selected dealership
     console.log("Selected dealership:", selectedDealership);
+    console.log("Selected location:", selectedLocation);
     onOpenChange();
   };
 
@@ -77,9 +94,20 @@ export default function NearbyGarageSelector({
                 Choisir un garage proche
               </ModalHeader>
               <ModalBody>
+                {/* LocationSearch added above the map */}
+                <div className="mb-4">
+                  <LocationSearch 
+                    onLocationSelect={handleLocationSelect} 
+                    className="w-full" 
+                    placeholder="Recherchez une adresse"
+                    label="Trouver une localisation"
+                  />
+                </div>
+
                 <MapBoxContainer
                   selectedDealership={selectedDealership}
                   onDealershipSelect={handleDealershipSelect}
+                  selectedLocation={selectedLocation}
                 />
 
                 <div className="mt-4">
@@ -93,7 +121,7 @@ export default function NearbyGarageSelector({
                     ref={scrollContainerRef}
                     orientation="horizontal"
                   >
-                    <div className="flex gap-4 py-2 pb-4">
+                    <div className="flex gap-4 m-2">
                       {dealerships.map((dealership, index) => (
                         <GarageInfoCard
                           key={dealership.dealership_name}

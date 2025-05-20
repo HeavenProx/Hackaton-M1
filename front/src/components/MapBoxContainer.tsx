@@ -3,20 +3,17 @@ import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import { dealerships } from "@/data/dealerships";
-import { Dealership } from "@/types/dealership";
-
-interface MapBoxContainerProps {
-  selectedDealership?: Dealership | null;
-  onDealershipSelect?: (dealership: Dealership) => void;
-}
+import { MapBoxContainerProps } from "@/types/mapBoxContainer";
 
 export default function MapBoxContainer({
   selectedDealership,
   onDealershipSelect,
+  selectedLocation,
 }: MapBoxContainerProps) {
   const mapRef = useRef<mapboxgl.Map | undefined>(undefined);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const markersRef = useRef<{ [key: string]: mapboxgl.Marker }>({});
+  const locationMarkerRef = useRef<mapboxgl.Marker | null>(null);
 
   useEffect(() => {
     if (!mapContainerRef.current) {
@@ -109,10 +106,35 @@ export default function MapBoxContainer({
     }
   }, [selectedDealership, onDealershipSelect]);
 
+  // Handle the selected location from LocationSearch
+  useEffect(() => {
+    // Remove previous location marker if it exists
+    if (locationMarkerRef.current) {
+      locationMarkerRef.current.remove();
+      locationMarkerRef.current = null;
+    }
+
+    if (selectedLocation && mapRef.current) {
+      // Create a new marker for the selected location
+      locationMarkerRef.current = new mapboxgl.Marker({
+        color: "#FF0000", // Red color to distinguish from dealership markers
+      })
+        .setLngLat([selectedLocation.longitude, selectedLocation.latitude])
+        .addTo(mapRef.current);
+
+      // Center map on the selected location
+      mapRef.current.flyTo({
+        center: [selectedLocation.longitude, selectedLocation.latitude],
+        zoom: 14,
+        essential: true,
+      });
+    }
+  }, [selectedLocation]);
+
   return (
     <div
       ref={mapContainerRef}
-      className="rounded-lg overflow-hidden h-[50vh]"
+      className="rounded-lg overflow-hidden h-[70vh]"
     />
   );
 }
