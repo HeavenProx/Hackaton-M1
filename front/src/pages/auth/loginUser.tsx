@@ -62,7 +62,7 @@ export default function LoginForm() {
             <Button type="submit" color="primary" fullWidth>Se connecter</Button>
 
             <p className="text-sm text-center text-gray-600">
-                Pas encore de compte ?{' '}
+                Pas encore de compte ?<br />
                 <Link to="/register" className="text-primary hover:underline">Créer un compte</Link>
             </p>
         </form>

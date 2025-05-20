@@ -180,7 +180,7 @@ export default function CarPart({ onPrevious, formData }: Props) {
             </div>
 
             <p className="text-sm text-center text-gray-600">
-                Vous avez déja un compte ?{' '}
+                Vous avez déja un compte ?<br />
                 <Link to="/login" className="text-primary hover:underline">Se connecter</Link>
             </p>
         </form>

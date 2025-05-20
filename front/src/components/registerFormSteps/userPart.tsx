@@ -145,9 +145,9 @@ export default function UserPart({ onNext, defaultValues }) {
                                 onClick={toggleVisibility}
                             >
                                 {isVisible ? (
-                                    <EyeSlashFilledIcon className="text-2xl text-blue-500 text-default-400 pointer-events-none" />
+                                    <EyeSlashFilledIcon className="text-2xl text-blue-500 pointer-events-none" />
                                 ) : (
-                                    <EyeFilledIcon className="text-2xl text-blue-500 text-default-400 pointer-events-none" />
+                                    <EyeFilledIcon className="text-2xl text-blue-500 pointer-events-none" />
                                 )}
                             </button>
                         }
@@ -183,7 +183,7 @@ export default function UserPart({ onNext, defaultValues }) {
             <Button type="submit" color="primary" fullWidth> Suivant</Button>
 
             <p className="text-sm text-center text-gray-600">
-                Vous avez déja un compte ?{' '}
+                Vous avez déja un compte ?<br />
                 <Link to="/login" className="text-primary hover:underline">Se connecter</Link>
             </p>
         </form>
