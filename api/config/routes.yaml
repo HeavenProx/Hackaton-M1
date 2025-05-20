@@ -1,3 +1,6 @@
 login:
   path: /login
   methods: ["POST"]
+
+refresh_token:
+  path: /token/refresh
