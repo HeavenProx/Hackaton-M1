@@ -1,11 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 
-import MultiStepForm from "@/components/loginForm";
+import RegisterForm from "@/pages/auth/registerUser";
+import LoginForm from "@/pages/auth/loginUser";
 
 function App() {
   return (
     <Routes>
-      <Route path="/register" element={<MultiStepForm />} />
+      <Route path="/register" element={<RegisterForm />} />
+      <Route path="/login" element={<LoginForm />} />
 
     </Routes>
   );
