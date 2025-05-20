@@ -35,6 +35,8 @@ security:
       refresh_jwt:
         check_path: /token/refresh
       entry_point: jwt
+      logout:
+        path: logout
 
   access_control:
     - { path: ^/$, roles: PUBLIC_ACCESS } # allows accessing the Swagger UI

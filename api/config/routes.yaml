@@ -4,3 +4,6 @@ login:
 
 refresh_token:
   path: /token/refresh
+
+logout:
+  path: /logout
