@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
@@ -57,6 +59,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'json')]
     private array $roles = [];
+
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $lastname = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $firstname = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $phoneNumber = null;
+
+    #[ORM\Column]
+    private ?bool $driver = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $driverPhoneNumber = null;
+
+    /**
+     * @var Collection<int, Car>
+     */
+    #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'user')]
+    private Collection $cars;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $driverFirstname = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $driverLastname = null;
+
+    public function __construct()
+    {
+        $this->cars = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -137,5 +177,143 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): static
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): static
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    public function isDriver(): ?bool
+    {
+        return $this->driver;
+    }
+
+    public function setDriver(bool $driver): static
+    {
+        $this->driver = $driver;
+
+        return $this;
+    }
+
+    public function getDriverPhonenumber(): ?string
+    {
+        return $this->driverPhoneNumber;
+    }
+
+    public function setDriverPhonenumber(?string $driverPhonenumber): static
+    {
+        $this->driverPhoneNumber = $driverPhonenumber;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Car>
+     */
+    public function getCars(): Collection
+    {
+        return $this->cars;
+    }
+
+    public function addCar(Car $car): static
+    {
+        if (!$this->cars->contains($car)) {
+            $this->cars->add($car);
+            $car->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCar(Car $car): static
+    {
+        if ($this->cars->removeElement($car)) {
+            // set the owning side to null (unless already changed)
+            if ($car->getUser() === $this) {
+                $car->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDriverFirstname(): ?string
+    {
+        return $this->driverFirstname;
+    }
+
+    public function setDriverFirstname(?string $driverFirstname): static
+    {
+        $this->driverFirstname = $driverFirstname;
+
+        return $this;
+    }
+
+    public function getDriverLastname(): ?string
+    {
+        return $this->driverLastname;
+    }
+
+    public function setDriverLastname(?string $driverLastname): static
+    {
+        $this->driverLastname = $driverLastname;
+
+        return $this;
     }
 }
