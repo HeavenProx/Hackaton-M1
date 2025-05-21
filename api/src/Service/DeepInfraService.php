@@ -62,6 +62,8 @@ class DeepInfraService
             }
 
             Utilise cette structure à chaque fois. Elle permet à l’interface de s’adapter dynamiquement.
+
+            ⚠️ Réponds STRICTEMENT avec un JSON valide. Ne mets pas de ```json ni d’autres balises. Pas de texte avant ou après. Seulement du JSON.
             PROMPT;
 
         $operationsList = implode(', ', array_map(
@@ -93,14 +95,23 @@ class DeepInfraService
 
     public function parseResponse(string $text): array
     {
-        $jsonStart = strpos($text, '{');
-
-        if ($jsonStart !== false) {
-            $json = substr($text, $jsonStart);
+        // Cherche un bloc JSON dans le texte avec une regex
+        if (preg_match('/\{(?:[^{}]|(?R))*\}/s', $text, $matches)) {
+            $json = $matches[0];
             $decoded = json_decode($json, true);
+
+            // On retourne le JSON décodé s’il est valide
+            if (is_array($decoded)) {
+                return $decoded + [
+                    "message" => "Réponse mal formée.",
+                    "action" => null,
+                    "options" => []
+                ];
+            }
         }
 
-        return $decoded ?? [
+        // Fallback si aucun JSON valide n'est trouvé
+        return [
             "message" => $text,
             "action" => null,
             "options" => []

@@ -6,18 +6,20 @@ import {
   Card,
   CardBody,
   Form,
-  Chip,
 } from "@heroui/react";
 
 import { SendIcon } from "@/components/icons/ChatIcons";
 import DefaultLayout from "@/layouts/default";
-import { colgroup } from "framer-motion/client";
 
 type Message = {
   role: "user" | "system";
   content: string;
   suggestions?: string[];
   message?: string;
+};
+
+type FormValues = {
+  message: string;
 };
 
 export default function ChatPage() {
@@ -32,14 +34,12 @@ export default function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-scroll to the bottom when new messages arrive
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Focus input on mount
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -51,69 +51,70 @@ export default function ChatPage() {
 
     if (!messageToSend.trim()) return;
 
-    // Add user message to chat
-    setMessages((prev) => [...prev, { role: "user", content: messageToSend }]);
-    setInput("");
+    const userMessage: Message = {
+      role: "user",
+      content: messageToSend,
+    };
+
+    const updatedMessages = [...messages, userMessage];
+
+    setMessages(updatedMessages);
+
     setIsLoading(true);
 
-    // Add a delay to simulate a longer request
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
     try {
-      console.log('message : ', messages);
       const response = await fetch("http://127.0.0.1:8000/chatbot/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/ld+json",
           Authorization:
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4MzgyNTEsImV4cCI6MTc0Nzg0MTg1MSwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiaHVnby5kdXBlcnRodXlAb3V0bG9vay5mciJ9.kEmkblRfDo7o6I1aV2abpkFoY2aUBMGaxvT7vx6083cOecqVY7Um1_r5oQdlM8uinymPk9NxDjgbsjFOYIR12h2pEOvmPA5tXAKcMjRGBXQGWPJieLMaeOL4fZcGWTalURAjZvRBxCK8gocnP-p3PKKuJ-NOvLj2-Q1ZAgHvd_LcLSWmehCXgy5SWHCyiTVrWppc7XgPmk0CuzqY349l86Lo9vqRHt9wINqpJmR1KTnePpwr4dH0WnNBiWC8923JE4GhDfNspSwubPpWPft-uBYHh_zryMz0r3Ooaf3l7tbaeYhvERIdNwYami9PCuZ-Xl5Vv9DH3AHGdqQ16yydYlVH_b7WSLbKahmx7-IAn0tH2SvI4W1Hz7bPSkkUAlpUP48dulNUrhhPKaBau8FtBwQY0xyZI4sHeQAV902hiN73LJk_MP72RJXAx2wahYL0WoK3qd4LG3GClGK2vLQJyvyeDtE74JrUnyCSyg-0MWyE7VLve6iD7qJHXfItr528EpBFU-VZghCgo1dygTskLpyI-jl-5A6zuGqYYgjHmyNme_zRYCJDu2tUiRwnvw1UaEP1HyRvVQFyHjpX1HUy2um5-B8YeSCS0HSyS6jRl4DnRD86ydrp5Oif64Z1vllXXCOeeDvRee5X0SChfHr1IPlo7uvFeuDvXF6pgf90pdA",
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4NDYzNDQsImV4cCI6MTc0Nzg0OTk0NCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoibG1pY2hhbGxvbkBwcm90b24ubWUifQ.sxFkOkgtS6Lg1G27M8kh2XnDkzxPSksrkQCwRtYS5b1OuOPal0w8ir0XSAAPBSTYcqTnwpjJrzX0ZF30z1IRCse4ZiHSlVqUdGy7y2AfRAHsupIxPDIGjWi-tU4Z6oXBdygqUCCZ-fWVOqKOzjJKClWvNE-a8PM5hDOQsCm6lSJ3D1fuUZMsRKVF-CZyyvJJgELagSQUEcPUG27N_HyA3lrEfVh3GjT8dwGUgO6gSIRjKmwJUgIYYAYd9ULVg_iR13QBqh3T5v5ro1XNEDAwEFHGLvxNxMYzmQ8fz59s_yR70FnQW87XjLWY7ibdooN5BUXSZJ4CioT20dEcmc40uA", // Ton token
         },
         body: JSON.stringify({
-          messages,
+          messages: updatedMessages,
         }),
       });
 
       const data = await response.json();
-      console.log('data : ', data);
-      // const botMessage = data.parsed?.text || data.raw_response || "Je n’ai pas compris.";
       const botMessage = data.response.message || "Je n’ai pas compris.";
 
-      const suggestions = data.response.option || [];
+      const botReply: Message = {
+        role: "system",
+        content: botMessage,
+      };
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "system",
-          content: botMessage,
-        },
-      ]);
+      setMessages((prev) => [...prev, botReply]);
     } catch (error) {
       console.error("Erreur lors de l'appel au chatbot :", error);
       setMessages((prev) => [
         ...prev,
         {
           role: "system",
-          content: "Une erreur est survenue lors de la communication avec le serveur.",
+          content:
+            "Une erreur est survenue lors de la communication avec le serveur.",
         },
       ]);
     } finally {
       setIsLoading(false);
-
-      // Refocus input after sending
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      }, 0);
+      setInput("");
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sendMessage();
-  };
 
-  console.log("message : ", messages)
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const formValues = Object.fromEntries(formData) as FormValues;
+
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: formValues.message },
+    ]);
+    setInput("");
+
+    sendMessage(formValues.message);
+  };
 
   return (
     <DefaultLayout>
@@ -145,9 +146,6 @@ export default function ChatPage() {
                 >
                   <CardBody className="py-2 px-3">
                     <p className="whitespace-pre-wrap">{message.content}</p>
-
-                    
-                  
                   </CardBody>
                 </Card>
               </div>
@@ -174,7 +172,7 @@ export default function ChatPage() {
         {/* Input area with Form */}
         <Form
           className="flex flex-row gap-2 max-w-3xl w-full mx-auto"
-          onSubmit={handleSubmit}
+          onSubmit={onSubmit}
         >
           <Input
             ref={inputRef}

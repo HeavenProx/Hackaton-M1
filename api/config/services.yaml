@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-  deepinfra.api_key: "%env(MISTRAL_API_KEY)%"
+  mistral.api_key: "%env(MISTRAL_API_KEY)%"
 
 services:
   # default configuration for services in *this* file
@@ -22,7 +22,7 @@ services:
       - "../src/Kernel.php"
   App\Service\DeepInfraService:
     arguments:
-      $apiKey: "%deepinfra.api_key%"
+      $apiKey: "%mistral.api_key%"
 
   App\State\UserPasswordHasher:
     bind:
