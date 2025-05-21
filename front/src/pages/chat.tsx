@@ -69,7 +69,7 @@ export default function ChatPage() {
         headers: {
           "Content-Type": "application/ld+json",
           Authorization:
-            "Bearer TpGtBWHXveMFhd1AVVyuHvrykIfcHZjXfCL7uthxftwpwEiqPGMNFU",
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4MzAwNjIsImV4cCI6MTc0NzgzMzY2Miwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiaHVnby5kdXBlcnRodXlAb3V0bG9vay5mciJ9.lnXCBHm2G2JZ1ruz_AkxDvcH5qp24SGGoIg6brCMK5GKNfw8HgHdbSY-QR41XyjsXAZ5tOhvMHgOKftuMNF384pzE4iDwWmYcfzVuo_xi29vIsJQ_P3fgQ2NWkPyAvUoFBgVL_D6zZhc36uPond9tVFXIxHpP6ujxPjdG145e8Mj9hQdEyWrv1fDzA3NAIYuMzfR2Uh7Qg5VbAXOCjecavP3P9lKYOWLiAhWSJV24ZHeo-f5U7IO7hTuikFkLcnY2pHzzxGIP067X0P4Y0_iSTDtJ53RQKCwYM0r2VqvOO9bli9qomfTG6iwYeTPwqBFZAY9QscQ_wCCbhKcnHpB_RhoWvjut3b5_ocJg-JRqrty_goDgfyi2cmf6u_8SxcoY-kRUAhoUpDagwE2XI0X_sdB7GQtN_MGALP6hD39CkrcUV2C4NfMPDtzCAL4ODKCNg-qHlVj7cbRF0bYxCxMyWNBQsvCmaSUoWoNBWP0YWJ1mkclPQ1ASqhZFIwJzcB5LWEY6052AqFN8K7nmRFVXhOIi-gBrrPMACdunRskmTA_bnOd6NCoeGSOtink3umV8Zw5rirEsu2ogoHdA80jaqyV4xSbWX1tATMdAv7K19RvMyT733lYXj7GYcbyliIWfSWJe2FxkR8EepJPjsvDWWZ8aDbVoRaPw7m-1W6ezo8",
         },
         body: JSON.stringify({
           message: messageToSend,
