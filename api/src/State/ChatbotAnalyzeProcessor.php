@@ -18,9 +18,9 @@ class ChatbotAnalyzeProcessor implements ProcessorInterface
             throw new \InvalidArgumentException('Invalid input');
         }
 
-        $text = $this->ai->analyzeMessage($data->message);
-        $parsed = $this->ai->parseResponse($text);
+        $text = $this->ai->analyzeMessage($data->messages);
+        // $parsed = $this->ai->parseResponse($text);
 
-        return new ChatbotResponseOutput($text, $parsed);
+        return new ChatbotResponseOutput($text);
     }
 }
