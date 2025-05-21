@@ -10,9 +10,10 @@ import { useUser } from "@/contexts/UserContext";
 type Props = {
   onPrevious: () => void;
   formData: any;
+  isStandalone?: boolean;
 };
 
-export default function CarPart({ onPrevious, formData }: Props) {
+export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
   const [brands, setBrands] = useState<string[]>([]);
   const [filteredBrands, setFilteredBrands] = useState<string[]>([]);
   const [brandInput, setBrandInput] = useState("");
@@ -21,7 +22,7 @@ export default function CarPart({ onPrevious, formData }: Props) {
   const [modelInput, setModelInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { user, token } = useUser();
+  const { user, token, updateUser } = useUser();
   const navigate = useNavigate();
 
   const { register, handleSubmit, setValue } = useForm({ mode: "onSubmit" });
@@ -58,7 +59,8 @@ export default function CarPart({ onPrevious, formData }: Props) {
         color: "success",
       });
 
-      navigate("/login");
+      await updateUser();
+      navigate(isStandalone ? "/vehicles" : "/");
     } catch (err) {
       console.error("Erreur à l'enregistrement du véhicule :", err);
     } finally {
@@ -68,7 +70,7 @@ export default function CarPart({ onPrevious, formData }: Props) {
 
   const skipStep = () => {
     setIsLoading(true);
-    navigate("/login");
+    navigate(isStandalone ? "/vehicles" : "/");
     setIsLoading(false);
   };
 
@@ -230,13 +232,17 @@ export default function CarPart({ onPrevious, formData }: Props) {
         <Spacer y={1} />
 
         <div className="flex justify-between pt-4">
-          <Button type="button" variant="light" onClick={onPrevious}>
-            Retour
-          </Button>
-          <div className="flex gap-2">
-            <Button type="button" variant="ghost" onClick={skipStep}>
-              Passer cette étape
+          {!isStandalone && (
+            <Button type="button" variant="light" onClick={onPrevious}>
+              Retour
             </Button>
+          )}
+          <div className="flex gap-2">
+            {!isStandalone && (
+              <Button type="button" variant="ghost" onClick={skipStep}>
+                Passer cette étape
+              </Button>
+            )}
             <Button color="primary" type="submit">
               Enregistrer cette voiture
             </Button>
