@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, ReactNode } from "react";
+import { createContext, useState, useEffect, useContext, ReactNode } from "react";
 
 import { User, UserContextType } from "@/types/user";
 
@@ -11,6 +11,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+
+    setIsLoading(false);
+  }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
     const res = await fetch("http://127.0.0.1:8000/login", {
@@ -122,10 +135,28 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('user');
   };
 
-  // Update user function (empty implementation as requested)
-  const updateUser = async (userData: Partial<User>): Promise<void> => {
-    // Implementation will go here
+  const updateUser = async (): Promise<void> => {
+    if (!user?.email || !token) return;
+
+    try {
+      const userRes = await fetch("http://127.0.0.1:8000/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await userRes.json();
+      const updatedUser = data["member"].find((u: any) => u.email === user.email);
+
+      if (!updatedUser) return;
+
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    } catch (err) {
+      console.error("Erreur lors du rafraîchissement de l'utilisateur :", err);
+    }
   };
+
 
   // Value object that will be provided to consumers
   const value: UserContextType = {

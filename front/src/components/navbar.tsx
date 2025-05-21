@@ -19,11 +19,9 @@ export const Navbar = () => {
   const { isAuthenticated, user, logout } = useUser();
   const navigate = useNavigate();
 
-  console.log(user);
-
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -48,7 +46,7 @@ export const Navbar = () => {
               Bonjour {user?.firstname} {user?.lastname}
             </NavbarItem>
             <NavbarItem>
-              <Button as={Link} href="/dashboard" variant="flat">
+              <Button as={Link} href="/vehicles" variant="flat">
                 Mes véhicules
               </Button>
             </NavbarItem>
@@ -77,7 +75,7 @@ export const Navbar = () => {
                 </span>
               </NavbarMenuItem>
               <NavbarMenuItem>
-                <Link href="/dashboard" size="lg">
+                <Link href="/vehicles" size="lg">
                   Mes véhicules
                 </Link>
               </NavbarMenuItem>

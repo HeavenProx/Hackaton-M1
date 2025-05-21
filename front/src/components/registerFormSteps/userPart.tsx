@@ -299,7 +299,7 @@ export default function UserPart({ onNext, defaultValues }) {
 
         <p className="text-sm text-center text-gray-600">
           Vous avez déja un compte ?<br />
-          <Link className="text-primary hover:underline" to="/login">
+          <Link className="text-primary hover:underline" to="/">
             Se connecter
           </Link>
         </p>
