@@ -23,30 +23,54 @@ export default function ChatPage() {
   ]);
   const [input, setInput] = useState("");
 
-  const sendMessage = (msgText?: string) => {
+  const sendMessage = async (msgText?: string) => {
     const messageToSend = msgText ?? input;
 
     if (!messageToSend.trim()) return;
-
-    // Ajout du message utilisateur
+  
+    // Ajoute le message de l'utilisateur dans le chat
     setMessages((prev) => [...prev, { from: "user", text: messageToSend }]);
     setInput("");
+  
+    try {
+      const response = await fetch("http://127.0.0.1:8000/chatbot/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/ld+json",
+          Authorization:
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4MTQ1NDcsImV4cCI6MTc0NzgxODE0Nywicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiaHVnby5kdXBlcnRodXlAb3V0bG9vay5mciJ9.pNwABoEHZrPLlm3SuHQri-qbOZaAaB3hRsurvncxaGsj2_UkirvrXcx9LbABSG0_6fohQwDfEZXbaZoI-7Ec-j2JGUm7qSPb6xBQeO2d7e5YdMUbtJL4i8MWh7MSCjD61oYcrZJcy3arPVyZvgsoJYrvSbvKslhAMMEC4R3m_cfO_qSnF99ddddhe3UDSeykhVvKhifgKuDSAMsYDiKnQebKWWviWr-xKzcEonPmOE78qlkmyhsL7yefDvzNz9vV5_nl985y2Wq2nZ01YPWq3wO2aHa3IM1V_yYCzq6wv6LZHX0BS-G4pznax5yNtRLr04YWwlsDpS8ZHtHFx-rJhn8gJhmyUZbxKw_DJt2zyrV-ol3y0xRZJVzdUQ35l7o_KyK17pmUV7MISeziAap1aUKkQ1X08maJ4zCHhQ7SVOJMUtgNa6zIKz_KsJPOercBE0jhZvqAC5e1AjOfwMGGS81sgbM1mN2dz80sFxZDX4g4h9_NOAGtygJ3oyiA2w2N9vIJftr4skWeTgn85Um0JGmdwrASUpS-Pzm9KnFu4xuGgnzxZYPh-tTMNyRxwLLdTuEkYC3fluiUGUnCYmNZfX1lt0EzI188pgDivvcVOqnsMDFYUKOs-TpGtBWHXveMFhd1AVVyuHvrykIfcHZjXfCL7uthxftwpwEiqPGMNFU",
+        },
+        body: JSON.stringify({
+          message: messageToSend,
+        }),
+      });
 
-    // Réponse du bot (à remplacer par un appel API plus tard)
-    setTimeout(() => {
+      
+      const data = await response.json();
+      
+      // const botMessage = data.parsed?.text || data.raw_response || "Je n’ai pas compris.";
+      const botMessage = data.parsed?.commentaire || data.raw_response || "Je n’ai pas compris.";
+
+      const suggestions = data.parsed?.suggestions || [];
+  
       setMessages((prev) => [
         ...prev,
         {
           from: "bot",
-          text: "Tu peux choisir une option ci-dessous :",
-          suggestions: [
-            "Voir les horaires",
-            "Prendre RDV",
-            "Parler à un humain",
-          ],
+          text: botMessage,
+          suggestions: suggestions.length > 0 ? suggestions : undefined,
         },
       ]);
-    }, 600);
+    } catch (error) {
+      console.error("Erreur lors de l'appel au chatbot :", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          from: "bot",
+          text: "Une erreur est survenue lors de la communication avec le serveur.",
+        },
+      ]);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -64,9 +88,7 @@ export default function ChatPage() {
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center py-3 h-[90vh]">
         <div className="inline-block text-center justify-center">
-          <h1 className={`${title()} text-xs`}>
-            Notre assistant va s&apos;occuper de vous
-          </h1>
+          <h1 className={`${title()} !text-3xl`}>Notre assistant va s'occuper de vous</h1>
         </div>
 
         <div className="flex flex-col w-full max-w-3xl h-full rounded-lg bg-30 shadow p-4 mt-6">
