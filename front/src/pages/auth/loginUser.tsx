@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Input, Button, Spacer, addToast } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons/EyeIcons";
 import { useUser } from "@/contexts/UserContext";
 import DefaultLayout from "@/layouts/default";
@@ -17,13 +18,13 @@ export default function LoginForm() {
   const { login } = useUser();
   const navigate = useNavigate();
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({
-        mode: "onSubmit",
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onSubmit",
+  });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -50,8 +51,8 @@ export default function LoginForm() {
   return (
     <DefaultLayout>
       <form
-        onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-6 max-w-md mx-auto mt-10 bg-default-50 p-6 shadow-xl rounded-2xl"
+        onSubmit={handleSubmit(onSubmit)}
       >
         <h2 className="text-2xl font-bold text-default-800">
           Connexion à votre compte
@@ -63,14 +64,16 @@ export default function LoginForm() {
 
         <Input
           {...register("email", { required: "Adresse email requise" })}
+          isRequired
+          color="default"
           label="Adresse email"
           type="email"
-          color="default"
-          isRequired
         />
 
         <Input
           {...register("password", { required: "Mot de passe requis" })}
+          isRequired
+          color="default"
           endContent={
             <button
               aria-label="toggle password visibility"
@@ -87,19 +90,17 @@ export default function LoginForm() {
           }
           label="Mot de passe"
           type={isVisible ? "text" : "password"}
-          color="default"
-          isRequired
         />
 
         <Spacer y={1} />
 
-        <Button type="submit" color="primary" fullWidth isLoading={isLoading}>
+        <Button fullWidth color="primary" isLoading={isLoading} type="submit">
           Se connecter
         </Button>
 
         <p className="text-sm text-center text-default-600">
           Pas encore de compte ?<br />
-          <Link to="/register" className="text-primary hover:underline">
+          <Link className="text-primary hover:underline" to="/register">
             Créer un compte
           </Link>
         </p>
