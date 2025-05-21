@@ -11,24 +11,20 @@ import {
 
 import { SendIcon } from "@/components/icons/ChatIcons";
 import DefaultLayout from "@/layouts/default";
+import { colgroup } from "framer-motion/client";
 
 type Message = {
-  from: "user" | "bot";
-  text: string;
+  role: "user" | "system";
+  content: string;
   suggestions?: string[];
+  message?: string;
 };
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
-      from: "bot",
-      text: "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
-      suggestions: [
-        "Problème moteur",
-        "Problème de freins",
-        "Vidange",
-        "Pneus",
-      ],
+      role: "system",
+      content: "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -56,7 +52,7 @@ export default function ChatPage() {
     if (!messageToSend.trim()) return;
 
     // Add user message to chat
-    setMessages((prev) => [...prev, { from: "user", text: messageToSend }]);
+    setMessages((prev) => [...prev, { role: "user", content: messageToSend }]);
     setInput("");
     setIsLoading(true);
 
@@ -64,36 +60,31 @@ export default function ChatPage() {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     try {
+      console.log('message : ', messages);
       const response = await fetch("http://127.0.0.1:8000/chatbot/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/ld+json",
           Authorization:
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4MzAwNjIsImV4cCI6MTc0NzgzMzY2Miwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiaHVnby5kdXBlcnRodXlAb3V0bG9vay5mciJ9.lnXCBHm2G2JZ1ruz_AkxDvcH5qp24SGGoIg6brCMK5GKNfw8HgHdbSY-QR41XyjsXAZ5tOhvMHgOKftuMNF384pzE4iDwWmYcfzVuo_xi29vIsJQ_P3fgQ2NWkPyAvUoFBgVL_D6zZhc36uPond9tVFXIxHpP6ujxPjdG145e8Mj9hQdEyWrv1fDzA3NAIYuMzfR2Uh7Qg5VbAXOCjecavP3P9lKYOWLiAhWSJV24ZHeo-f5U7IO7hTuikFkLcnY2pHzzxGIP067X0P4Y0_iSTDtJ53RQKCwYM0r2VqvOO9bli9qomfTG6iwYeTPwqBFZAY9QscQ_wCCbhKcnHpB_RhoWvjut3b5_ocJg-JRqrty_goDgfyi2cmf6u_8SxcoY-kRUAhoUpDagwE2XI0X_sdB7GQtN_MGALP6hD39CkrcUV2C4NfMPDtzCAL4ODKCNg-qHlVj7cbRF0bYxCxMyWNBQsvCmaSUoWoNBWP0YWJ1mkclPQ1ASqhZFIwJzcB5LWEY6052AqFN8K7nmRFVXhOIi-gBrrPMACdunRskmTA_bnOd6NCoeGSOtink3umV8Zw5rirEsu2ogoHdA80jaqyV4xSbWX1tATMdAv7K19RvMyT733lYXj7GYcbyliIWfSWJe2FxkR8EepJPjsvDWWZ8aDbVoRaPw7m-1W6ezo8",
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4MzgyNTEsImV4cCI6MTc0Nzg0MTg1MSwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiaHVnby5kdXBlcnRodXlAb3V0bG9vay5mciJ9.kEmkblRfDo7o6I1aV2abpkFoY2aUBMGaxvT7vx6083cOecqVY7Um1_r5oQdlM8uinymPk9NxDjgbsjFOYIR12h2pEOvmPA5tXAKcMjRGBXQGWPJieLMaeOL4fZcGWTalURAjZvRBxCK8gocnP-p3PKKuJ-NOvLj2-Q1ZAgHvd_LcLSWmehCXgy5SWHCyiTVrWppc7XgPmk0CuzqY349l86Lo9vqRHt9wINqpJmR1KTnePpwr4dH0WnNBiWC8923JE4GhDfNspSwubPpWPft-uBYHh_zryMz0r3Ooaf3l7tbaeYhvERIdNwYami9PCuZ-Xl5Vv9DH3AHGdqQ16yydYlVH_b7WSLbKahmx7-IAn0tH2SvI4W1Hz7bPSkkUAlpUP48dulNUrhhPKaBau8FtBwQY0xyZI4sHeQAV902hiN73LJk_MP72RJXAx2wahYL0WoK3qd4LG3GClGK2vLQJyvyeDtE74JrUnyCSyg-0MWyE7VLve6iD7qJHXfItr528EpBFU-VZghCgo1dygTskLpyI-jl-5A6zuGqYYgjHmyNme_zRYCJDu2tUiRwnvw1UaEP1HyRvVQFyHjpX1HUy2um5-B8YeSCS0HSyS6jRl4DnRD86ydrp5Oif64Z1vllXXCOeeDvRee5X0SChfHr1IPlo7uvFeuDvXF6pgf90pdA",
         },
         body: JSON.stringify({
-          message: messageToSend,
+          messages,
         }),
       });
 
-      
-
       const data = await response.json();
-      console.log(data);
+      console.log('data : ', data);
       // const botMessage = data.parsed?.text || data.raw_response || "Je n’ai pas compris.";
-      const botMessage = data.parsed?.commentaire || data.raw_response || "Je n’ai pas compris.";
+      const botMessage = data.response.message || "Je n’ai pas compris.";
 
-
-      const botMessage =
-        data.parsed?.text || data.raw_response || "Je n'ai pas compris.";
-      const suggestions = data.parsed?.suggestions || [];
+      const suggestions = data.response.option || [];
 
       setMessages((prev) => [
         ...prev,
         {
-          from: "bot",
-          text: botMessage,
-          suggestions: suggestions.length > 0 ? suggestions : undefined,
+          role: "system",
+          content: botMessage,
         },
       ]);
     } catch (error) {
@@ -101,8 +92,8 @@ export default function ChatPage() {
       setMessages((prev) => [
         ...prev,
         {
-          from: "bot",
-          text: "Une erreur est survenue lors de la communication avec le serveur.",
+          role: "system",
+          content: "Une erreur est survenue lors de la communication avec le serveur.",
         },
       ]);
     } finally {
@@ -122,6 +113,8 @@ export default function ChatPage() {
     sendMessage();
   };
 
+  console.log("message : ", messages)
+
   return (
     <DefaultLayout>
       <div className="flex flex-col h-[87vh]">
@@ -140,36 +133,21 @@ export default function ChatPage() {
               <div
                 key={index}
                 className={`flex ${
-                  message.from === "user" ? "justify-end" : "justify-start"
+                  message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
                 <Card
                   className={`max-w-[80%] shadow-sm ${
-                    message.from === "user"
+                    message.role === "user"
                       ? "bg-primary text-white"
                       : "bg-default-50"
                   }`}
                 >
                   <CardBody className="py-2 px-3">
-                    <p className="whitespace-pre-wrap">{message.text}</p>
+                    <p className="whitespace-pre-wrap">{message.content}</p>
 
-                    {/* Suggestions */}
-                    {message.suggestions && message.suggestions.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        {message.suggestions.map((suggestion, idx) => (
-                          <Button
-                            key={idx}
-                            color="primary"
-                            variant={message.from === "user" ? "flat" : "solid"}
-                            onPress={() => sendMessage(suggestion)}
-                            size="sm"
-                            radius="full"
-                          >
-                            {suggestion}
-                          </Button>
-                        ))}
-                      </div>
-                    )}
+                    
+                  
                   </CardBody>
                 </Card>
               </div>

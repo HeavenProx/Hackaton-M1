@@ -71,13 +71,13 @@ class DeepInfraService
 
         $prompt = str_replace('{{operations}}', $operationsList, $basePrompt);
 
-        $response = $this->client->request('POST', 'https://api.deepinfra.com/v1/openai/chat/completions', [
+        $response = $this->client->request('POST', 'https://api.mistral.ai/v1/chat/completions', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                'model' => 'meta-llama/Llama-2-70b-chat-hf',
+                'model' => 'mistral-medium-latest',
                 'messages' => [
                     ['role' => 'system', 'content' => $prompt],
                     ...$messages,
@@ -100,6 +100,10 @@ class DeepInfraService
             $decoded = json_decode($json, true);
         }
 
-        return $decoded ?? [];
+        return $decoded ?? [
+            "message" => $text,
+            "action" => null,
+            "options" => []
+        ];
     }
 }
