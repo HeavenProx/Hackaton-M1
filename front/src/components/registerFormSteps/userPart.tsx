@@ -2,14 +2,16 @@
 
 import React from "react";
 import { useForm, Controller } from 'react-hook-form'
-import { Input, Button, Switch, Select, SelectItem, Spacer } from '@heroui/react'
+import { Input, Button, Switch, Select, SelectItem, Spacer, addToast } from '@heroui/react'
 import { useState } from 'react'
 import { EyeFilledIcon, EyeSlashFilledIcon } from '@/components/icons/EyeIcons'
 import { Link } from 'react-router-dom'
+import { useUser } from '@/contexts/UserContext'
 
 export default function UserPart({ onNext, defaultValues }) {
     const [isDriver, setIsDriver] = useState(defaultValues.isConducteur ?? true);
     const [isVisible, setIsVisible] = React.useState(false);
+    const { register: registerUser } = useUser();
 
     const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -23,7 +25,10 @@ export default function UserPart({ onNext, defaultValues }) {
         watch,
         formState: { errors }
     } = useForm({
-        defaultValues,
+        defaultValues: {
+            ...defaultValues,
+            isDriver: defaultValues?.isDriver ?? true,
+        },
         mode: 'onSubmit',
     })
 
@@ -34,28 +39,50 @@ export default function UserPart({ onNext, defaultValues }) {
         setIsDriver(value)
     }
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         if (data.password !== data.confirmPassword) {
             setError('confirmPassword', {
                 type: 'manual',
                 message: 'Les mots de passe ne correspondent pas'
-            })
-            return
+            });
+            return;
         }
 
-        clearErrors('confirmPassword')
+        clearErrors('confirmPassword');
 
         if (data.isDriver) {
-            data.driverLastname = data.lastName
-            data.driverFirstname = data.firstName
-            data.driverPhone = data.phone
+            data.driverLastname = data.lastName;
+            data.driverFirstname = data.firstName;
+            data.driverPhone = data.phone;
         }
 
-        onNext(data)
+        try {
+            await registerUser(data.email, data.password, data.firstName, data.lastName, data.phone, data.title, data.companyName, data.isDriver, data.driverFirstname, data.driverLastname, data.driverPhone);
+
+            addToast({
+                title: "Inscription réussie",
+                description: "Votre compte a bien été créé.",
+                color: "success",
+            });
+
+            onNext(data);
+        } catch (err) {
+            console.error("Erreur à l'inscription :", err);
+            setError("email", {
+                type: "manual",
+                message: "Cette adresse mail est déjà utilisée par un utilisateur, veuillez la modifier !"
+            });
+        }
     }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+            {errors.email?.message && (
+                <div className="text-red-600 text-sm font-medium mb-2">
+                    {errors.email.message}
+                </div>
+            )}
+
             <div className="flex flex-col md:flex-row gap-4">
                 <div className={title === 'société' ? 'w-full md:flex-1' : 'w-full'}>
                     <Controller
@@ -165,7 +192,13 @@ export default function UserPart({ onNext, defaultValues }) {
 
             <div className="flex items-center justify-between py-2">
                 <span className="text-sm font-medium text-gray-700">Êtes-vous le conducteur du véhicule ?</span>
-                <Switch isSelected={isDriver} onValueChange={handleSwitch}>
+                <Switch
+                    isSelected={isDriver}
+                    onValueChange={(value) => {
+                        handleSwitch(value);
+                        setValue('isDriver', value);
+                    }}
+                >
                     {isDriver ? 'Oui' : 'Non'}
                 </Switch>
             </div>

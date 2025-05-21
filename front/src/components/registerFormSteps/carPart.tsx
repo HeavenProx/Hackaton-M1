@@ -1,9 +1,11 @@
 'use client'
 
-import { Input, Button, Spacer } from '@heroui/react'
+import { Input, Button, Spacer, addToast } from '@heroui/react'
 import { useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useUser } from '@/contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
     onPrevious: () => void
@@ -19,6 +21,9 @@ export default function CarPart({ onPrevious, formData }: Props) {
     const [filteredModels, setFilteredModels] = useState<string[]>([])
     const [modelInput, setModelInput] = useState("")
 
+    const { user, token } = useUser();
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -27,16 +32,48 @@ export default function CarPart({ onPrevious, formData }: Props) {
         mode: 'onSubmit'
     })
 
-    const onSubmit = (data) => {
-        const finalData = { ...formData, ...data }
-        console.log('Soumission finale :', finalData)
-        // Ici, requête POST vers serveur API
-    }
+    const onSubmit = async (data) => {
+        const finalData = { ...formData, ...data };
 
-    const skipStep = () => {
-        console.log('Soumission sans véhicule :', formData)
-        // TODO: POST formData vers le serveur
-    }
+        try {
+            const res = await fetch('http://127.0.0.1:8000/cars', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/ld+json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    user: `/users/${user?.id}`,
+                    brand: finalData.carBrand,
+                    model: finalData.carModel,
+                    registration: finalData.carLicence,
+                    vin: finalData.carVin,
+                    entryCirculationDate: finalData.carCirculationDate,
+                    distance: parseFloat(finalData.carDistance)
+                }),
+            });
+
+            if (!res.ok) throw new Error('Erreur lors de la sauvegarde du véhicule');
+
+            addToast({
+                title: "Véhicule enregistré",
+                description: "Votre véhicule a bien été enregistré, vous pourrez en ajouter d'autres depuis la page 'Mon compte'",
+                color: "success",
+            });
+
+            navigate('/login');
+        } catch (err) {
+            console.error("Erreur à l'enregistrement du véhicule :", err);
+        }
+    };
+
+    const skipStep = async () => {
+        try {
+            navigate('/login');
+        } catch (err) {
+            console.error("Erreur lors du skip :", err);
+        }
+    };
 
     const dateToday = new Date().toISOString().split('T')[0]
 
@@ -178,11 +215,6 @@ export default function CarPart({ onPrevious, formData }: Props) {
                     <Button type="submit" color="primary">Créer mon compte</Button>
                 </div>
             </div>
-
-            <p className="text-sm text-center text-gray-600">
-                Vous avez déja un compte ?<br />
-                <Link to="/login" className="text-primary hover:underline">Se connecter</Link>
-            </p>
         </form>
     )
 }
