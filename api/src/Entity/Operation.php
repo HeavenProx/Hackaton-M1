@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\OperationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: OperationRepository::class)]
@@ -17,9 +20,11 @@ class Operation
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $category = null;
 
@@ -29,11 +34,24 @@ class Operation
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $duration = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $price = null;
+
+    /**
+     * @var Collection<int, Intervention>
+     */
+    #[ORM\ManyToMany(targetEntity: Intervention::class, mappedBy: 'operations')]
+    private Collection $interventions;
+
+    public function __construct()
+    {
+        $this->interventions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -108,6 +126,33 @@ class Operation
     public function setPrice(?string $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Intervention>
+     */
+    public function getInterventions(): Collection
+    {
+        return $this->interventions;
+    }
+
+    public function addIntervention(Intervention $intervention): static
+    {
+        if (!$this->interventions->contains($intervention)) {
+            $this->interventions->add($intervention);
+            $intervention->addOperation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIntervention(Intervention $intervention): static
+    {
+        if ($this->interventions->removeElement($intervention)) {
+            $intervention->removeOperation($this);
+        }
 
         return $this;
     }

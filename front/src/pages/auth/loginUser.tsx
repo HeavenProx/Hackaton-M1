@@ -17,13 +17,13 @@ export default function LoginForm() {
   const { login } = useUser();
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    mode: "onSubmit",
-  });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        mode: "onSubmit",
+    });
 
   const onSubmit = async (data) => {
     setIsLoading(true);

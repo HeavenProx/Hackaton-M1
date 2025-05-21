@@ -46,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups(['user:read', 'user:create', 'user:update'])]
+    #[Groups(['user:read', 'user:create', 'user:update','interventions_pdf::read'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -60,25 +60,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
+    #[Groups(['interventions_pdf::read','user:create', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
+    #[Groups(['interventions_pdf::read','user:create', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $societyName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['interventions_pdf::read','user:create', 'user:update'])]
     private ?string $lastname = null;
 
+    #[Groups(['interventions_pdf::read','user:create', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $address = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phoneNumber = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $driver = null;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
+    private ?bool $isDriver = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $driverPhoneNumber = null;
 
     /**
@@ -87,9 +98,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'user')]
     private Collection $cars;
 
+    #[Groups(['interventions_pdf::read','user:create', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $driverFirstname = null;
 
+    #[Groups(['interventions_pdf::read','user:create', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $driverLastname = null;
 
@@ -191,6 +204,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getSocietyName(): ?string
+    {
+        return $this->societyName;
+    }
+
+    public function setSocietyName(string $societyName): static
+    {
+        $this->societyName = $societyName;
+
+        return $this;
+    }
+
     public function getLastname(): ?string
     {
         return $this->lastname;
@@ -215,18 +240,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(string $address): static
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
@@ -239,15 +252,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isDriver(): ?bool
+    public function getIsDriver(): ?bool
     {
-        return $this->driver;
+        return $this->isDriver;
     }
 
-    public function setDriver(bool $driver): static
+    public function setIsDriver(?bool $isDriver): static
     {
-        $this->driver = $driver;
-
+        $this->isDriver = $isDriver;
         return $this;
     }
 

@@ -3,39 +3,65 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CarRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(validationContext: ['groups' => ['Default', 'car:create']]),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+    ],
+    normalizationContext: ['groups' => ['car:read']],
+    denormalizationContext: ['groups' => ['car:write']],
+)]
 class Car
 {
+    #[Groups(['car:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['car:write', 'car:read','interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $brand = null;
 
+    #[Groups(['car:write', 'car:read','interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $model = null;
 
+    #[Groups(['car:write', 'car:read','interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $registration = null;
 
+    #[Groups(['car:write', 'car:read'])]
     #[ORM\Column(length: 255)]
     private ?string $vin = null;
 
+    #[Groups(['car:write', 'car:read'])]
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $entryCirculationDate = null;
 
+    #[Groups(['car:write', 'car:read','interventions_pdf::read'])]
     #[ORM\Column]
     private ?float $distance = null;
 
+    #[Groups(['car:write', 'car:read'])]
     #[ORM\ManyToOne(inversedBy: 'cars')]
     private ?User $user = null;
 

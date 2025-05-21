@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Transition } from "@headlessui/react";
-
-import UserPart from "@/components/registerFormSteps/userPart";
-import CarPart from "@/components/registerFormSteps/carPart";
+import { useState } from 'react'
+import UserPart from '@/components/registerFormSteps/userPart'
+import CarPart from '@/components/registerFormSteps/carPart'
+import { Transition } from '@headlessui/react'
+import DefaultLayout from "@/layouts/default";
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -29,33 +29,34 @@ export default function RegisterPage() {
           : "Vous pouvez dès à présent renseigner les données de votre véhicule, ou alors vous pourrez le faire plus tard, depuis votre compte."}
       </p>
 
-      <Transition
-        enter="transition-opacity duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity duration-200"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-        show={step === 1}
-      >
-        <div>
-          <UserPart defaultValues={formData} onNext={next} />
-        </div>
-      </Transition>
+        <Transition
+          show={step === 1}
+          enter="transition-opacity duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div>
+            <UserPart onNext={next} defaultValues={formData} />
+          </div>
+        </Transition>
 
-      <Transition
-        enter="transition-opacity duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity duration-200"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-        show={step === 2}
-      >
-        <div>
-          <CarPart formData={formData} onPrevious={previous} />
-        </div>
-      </Transition>
-    </div>
-  );
+        <Transition
+          show={step === 2}
+          enter="transition-opacity duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div>
+            <CarPart onPrevious={previous} formData={formData} />
+          </div>
+        </Transition>
+      </div>
+    </DefaultLayout>
+  )
 }
