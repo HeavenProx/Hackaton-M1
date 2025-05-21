@@ -38,10 +38,13 @@ export default function ChatPage() {
           message: messageToSend,
         }),
       });
-  
+
+      
       const data = await response.json();
-  
-      const botMessage = data.parsed?.text || data.raw_response || "Je n’ai pas compris.";
+      
+      // const botMessage = data.parsed?.text || data.raw_response || "Je n’ai pas compris.";
+      const botMessage = data.parsed?.commentaire || data.raw_response || "Je n’ai pas compris.";
+
       const suggestions = data.parsed?.suggestions || [];
   
       setMessages((prev) => [
@@ -79,7 +82,7 @@ export default function ChatPage() {
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center py-3 h-[90vh]">
         <div className="inline-block text-center justify-center">
-          <h1 className={`${title()} text-xs`}>Notre assistant va s'occuper de vous</h1>
+          <h1 className={`${title()} !text-3xl`}>Notre assistant va s'occuper de vous</h1>
         </div>
 
         <div className="flex flex-col w-full max-w-3xl h-full rounded-lg bg-30 shadow p-4 mt-6">
