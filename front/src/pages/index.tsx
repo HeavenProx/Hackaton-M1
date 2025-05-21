@@ -31,7 +31,7 @@ export default function IndexPage() {
           open NearbyGarageSelector
         </Button>
       </div>
-      
+
       <NearbyGarageSelector disclosure={disclosure} />
     </DefaultLayout>
   );
