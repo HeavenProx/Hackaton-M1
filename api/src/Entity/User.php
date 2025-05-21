@@ -54,52 +54,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank(groups: ['user:create'])]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $societyName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?bool $isDriver = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $driverPhoneNumber = null;
 
     /**
      * @var Collection<int, Car>
      */
     #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'user')]
+    #[Groups(['user:read', 'user:update'])]
     private Collection $cars;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $driverFirstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:update'])]
+    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $driverLastname = null;
 
     public function __construct()

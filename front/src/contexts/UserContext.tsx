@@ -30,14 +30,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
     });
 
-    const user = await userRes.json();
-    if (!user) throw new Error("Utilisateur non trouvé");
+    const users = await userRes.json();
+    const matchedUser = users["member"].find((u: any) => u.email === email);
+    if (!matchedUser) throw new Error("Utilisateur non trouvé");
 
-    setUser(user);
+    setUser(matchedUser);
     setToken(token);
     setIsAuthenticated(true);
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(matchedUser));
   };
 
   const register = async (email: string, password: string, firstname?: string, lastname?: string, phoneNumber?: string, title?: string, societyName?: string, isDriver?: boolean, driverFirstname?: string, driverLastname?: string, driverPhoneNumber?: string): Promise<void> => {
@@ -82,9 +83,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Logout function (empty implementation as requested)
   const logout = () => {
-    // Implementation will go here
+    setUser(null);
+    setToken(null);
+    setIsAuthenticated(false);
+    setIsLoading(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   // Update user function (empty implementation as requested)
