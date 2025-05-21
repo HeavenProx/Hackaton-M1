@@ -8,17 +8,17 @@ export const Logo: React.FC<IconSvgProps> = ({
   ...props
 }) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 32 32"
     fill="currentColor"
     height={size || height}
+    viewBox="0 0 32 32"
     width={size || height}
+    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path
       clipRule="evenodd"
-      fillRule="evenodd"
       d="M27 17.1v-2.2l-2.2-.4c-.2-.7-.4-1.3-.7-1.9l1.4-1.8-1.6-1.6-1.8 1.4c-.6-.3-1.2-.5-1.9-.7L17.1 5h-2.2l-.4 2.2c-.7.2-1.3.4-1.9.7l-1.8-1.4-1.6 1.6 1.4 1.8c-.3.6-.5 1.2-.7 1.9L5 14.9v2.2l2.2.4c.2.7.4 1.3.7 1.9l-1.4 1.8 1.6 1.6 1.8-1.4c.6.3 1.2.5 1.9.7L14.9 27h2.2l.4-2.2c.7-.2 1.3-.4 1.9-.7l1.8 1.4 1.6-1.6-1.4-1.8c.3-.6.5-1.2.7-1.9L27 17.1ZM16 21a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
+      fillRule="evenodd"
     />
   </svg>
 );

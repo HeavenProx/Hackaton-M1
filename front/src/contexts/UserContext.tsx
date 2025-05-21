@@ -18,7 +18,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Register function to create a new account
-  const register = async (username: string, email: string, password: string): Promise<void> => {
+  const register = async (
+    username: string,
+    email: string,
+    password: string,
+  ): Promise<void> => {
     // Implementation will go here
     // This function should handle the registration process
     // and might involve API calls to create a new user account
