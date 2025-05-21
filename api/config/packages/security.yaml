@@ -1,11 +1,8 @@
-# api/config/packages/security.yaml
 security:
-  # https://symfony.com/doc/current/security.html#c-hashing-passwords
   password_hashers:
-    App\Entity\User: "auto"
-  # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    App\Entity\User: auto
+
   providers:
-    # used to reload user from session & other features (e.g. switch_user)
     users:
       entity:
         class: App\Entity\User
@@ -32,15 +29,12 @@ security:
       stateless: true
       provider: users
       jwt: ~
-      refresh_jwt:
-        check_path: /token/refresh
-      entry_point: jwt
       logout:
-        path: logout
+        path: /logout
 
   access_control:
-    - { path: ^/$, roles: PUBLIC_ACCESS } # allows accessing the Swagger UI
-    - { path: ^/docs, roles: PUBLIC_ACCESS } # allows accessing API documentations and Swagger UI docs
-    - { path: ^/(login|users|token/refresh), roles: PUBLIC_ACCESS }
+    - { path: ^/$, roles: PUBLIC_ACCESS }
+    - { path: ^/docs, roles: PUBLIC_ACCESS }
+    - { path: ^/(login|token/refresh), roles: PUBLIC_ACCESS }
     - { path: ^/users, methods: [POST], roles: PUBLIC_ACCESS }
     - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
