@@ -8,9 +8,8 @@ import ChatPage from "@/pages/chat";
 function App() {
   return (
     <Routes>
-      <Route element={<IndexPage />} path="/" />
       <Route element={<RegisterForm />} path="/register" />
-      <Route element={<LoginForm />} path="/login" />
+      <Route element={<LoginForm />} path="/" />
       <Route element={<ChatPage />} path="/chat" />
     </Routes>
   );

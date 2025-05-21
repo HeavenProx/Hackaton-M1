@@ -40,9 +40,8 @@ class AppFixtures extends Fixture
             $user->setTitle($record['title'] ?? null);
             $user->setLastname($record['lastname'] ?? null);
             $user->setFirstname($record['firstname'] ?? null);
-            $user->setAddress($record['address'] ?? null);
             $user->setPhoneNumber($record['phoneNumber'] ?? null);
-            $user->setDriver(filter_var($record['driver'] ?? false, FILTER_VALIDATE_BOOLEAN));
+            $user->setIsDriver(filter_var($record['driver'] ?? false, FILTER_VALIDATE_BOOLEAN));
             $user->setDriverFirstname($record['driverFirstname'] ?? null);
             $user->setDriverLastname($record['driverLastname'] ?? null);
             $user->setDriverPhoneNumber($record['driverPhoneNumber'] ?? null);
