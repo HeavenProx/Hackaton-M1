@@ -38,7 +38,7 @@ export default function ChatPage() {
         headers: {
           "Content-Type": "application/ld+json",
           Authorization:
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4MTQ1NDcsImV4cCI6MTc0NzgxODE0Nywicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiaHVnby5kdXBlcnRodXlAb3V0bG9vay5mciJ9.pNwABoEHZrPLlm3SuHQri-qbOZaAaB3hRsurvncxaGsj2_UkirvrXcx9LbABSG0_6fohQwDfEZXbaZoI-7Ec-j2JGUm7qSPb6xBQeO2d7e5YdMUbtJL4i8MWh7MSCjD61oYcrZJcy3arPVyZvgsoJYrvSbvKslhAMMEC4R3m_cfO_qSnF99ddddhe3UDSeykhVvKhifgKuDSAMsYDiKnQebKWWviWr-xKzcEonPmOE78qlkmyhsL7yefDvzNz9vV5_nl985y2Wq2nZ01YPWq3wO2aHa3IM1V_yYCzq6wv6LZHX0BS-G4pznax5yNtRLr04YWwlsDpS8ZHtHFx-rJhn8gJhmyUZbxKw_DJt2zyrV-ol3y0xRZJVzdUQ35l7o_KyK17pmUV7MISeziAap1aUKkQ1X08maJ4zCHhQ7SVOJMUtgNa6zIKz_KsJPOercBE0jhZvqAC5e1AjOfwMGGS81sgbM1mN2dz80sFxZDX4g4h9_NOAGtygJ3oyiA2w2N9vIJftr4skWeTgn85Um0JGmdwrASUpS-Pzm9KnFu4xuGgnzxZYPh-tTMNyRxwLLdTuEkYC3fluiUGUnCYmNZfX1lt0EzI188pgDivvcVOqnsMDFYUKOs-TpGtBWHXveMFhd1AVVyuHvrykIfcHZjXfCL7uthxftwpwEiqPGMNFU",
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4MTg3NzUsImV4cCI6MTc0NzgyMjM3NSwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiaHVnby5kdXBlcnRodXlAb3V0bG9vay5mciJ9.WateKCMpoDotKidQfJNkCcMBsnY1mdGoP_1b7Nx_8jTehCmL_BbcbCltGDWDZx2KuNKuMpr36mETjkMQG00l0iQu7E0U4yBdTe-9gmIVQBAJsZt6PWdjPUBuoE1sOZ0sr7H-6TP1qs2HY2nFcsZMhfj548l2DpfO1Q1EHLidhN1RODnXkGtNkNx1mX-zVGg3KO-s_9XzNaiLaTLKVf70Dk-8f24WMUQV3ePbMPC7IMh2-_nsaGj_qpTryLvcMBX1fcloAoZt_yE3YH1KmYAvmEhmWCdketEc3EaApJl6HeHBpkU3L-3MBtRFPhPvh4j5tlXAAI4wYm7CzZSuMwobKJnDRjpMgfae1KeCfWwFsMGPW59iq7watiJKzlVOpvG4e2wOMcLKIlgXkbB7z40KMqtBDD9y9YokzkAqQgAo6-Y3qRhvJwJMIAiqTbZrltzMi6XGcnr33ha9TKp7LtCdlgUm4etrgGNBKQD3XDui1Y9TkWDV1HBf6fDTxggko-RdbuTkuNjbllQUFujRxxRUSVbzen-Goz0Xer-6kf0ciJ54EpMjLn3mg91Y94aEA9_elPlmsSQGWX4y1KVlXWGRoNdj3VeB19OLMj7vnklIDSCW-yNJjGdg7FKypnWnMI8IaQHOK3iQi_PfhkZXJ8jjCmw-bqx8iSPMrhPSKw45Qfo",
         },
         body: JSON.stringify({
           message: messageToSend,
@@ -47,7 +47,7 @@ export default function ChatPage() {
 
       
       const data = await response.json();
-      
+      console.log(data);
       // const botMessage = data.parsed?.text || data.raw_response || "Je n’ai pas compris.";
       const botMessage = data.parsed?.commentaire || data.raw_response || "Je n’ai pas compris.";
 
