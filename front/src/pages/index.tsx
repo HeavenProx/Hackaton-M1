@@ -5,6 +5,7 @@ import { title, subtitle } from "@/components/primitives";
 import DefaultLayout from "@/layouts/default";
 import NearbyGarageSelector from "@/components/NearbyGarageSelector";
 import { useUser } from "@/contexts/UserContext";
+import PDFButton from "@/components/PdfGenerate.tsx";
 
 export default function IndexPage() {
   const {user} = useUser();
