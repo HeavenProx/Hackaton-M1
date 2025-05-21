@@ -61,7 +61,7 @@ class Car
     #[ORM\Column]
     private ?float $distance = null;
 
-    #[Groups(['car:write', 'car:read'])]
+    #[Groups(['car:write', 'car:read', 'interventions_pdf::read'])]
     #[ORM\ManyToOne(inversedBy: 'cars')]
     private ?User $user = null;
 
