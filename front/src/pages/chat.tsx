@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { title } from "@/components/primitives";
 import DefaultLayout from "@/layouts/default";
 
@@ -13,13 +14,18 @@ export default function ChatPage() {
     {
       from: "bot",
       text: "Salut ! Comment puis-je t’aider aujourd’hui ?",
-      suggestions: ["J’ai une question", "Prendre un rendez-vous", "J'ai une panne"],
+      suggestions: [
+        "J’ai une question",
+        "Prendre un rendez-vous",
+        "J'ai une panne",
+      ],
     },
   ]);
   const [input, setInput] = useState("");
 
   const sendMessage = async (msgText?: string) => {
     const messageToSend = msgText ?? input;
+
     if (!messageToSend.trim()) return;
   
     // Ajoute le message de l'utilisateur dans le chat
@@ -79,7 +85,9 @@ export default function ChatPage() {
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center py-3 h-[90vh]">
         <div className="inline-block text-center justify-center">
-          <h1 className={`${title()} text-xs`}>Notre assistant va s'occuper de vous</h1>
+          <h1 className={`${title()} text-xs`}>
+            Notre assistant va s&apos;occuper de vous
+          </h1>
         </div>
 
         <div className="flex flex-col w-full max-w-3xl h-full rounded-lg bg-30 shadow p-4 mt-6">
@@ -101,8 +109,8 @@ export default function ChatPage() {
                     {msg.suggestions.map((suggestion, index) => (
                       <button
                         key={index}
-                        onClick={() => handleSuggestionClick(suggestion)}
                         className="bg-white-30 text-foreground px-3 py-1 rounded-md text-sm hover:bg-white-10 border border-2 transition"
+                        onClick={() => handleSuggestionClick(suggestion)}
                       >
                         {suggestion}
                       </button>
@@ -116,16 +124,16 @@ export default function ChatPage() {
           {/* Champ de saisie */}
           <div className="flex gap-2">
             <textarea
+              className="flex-grow resize-none p-3 rounded-lg text-sm focus:outline-none"
+              placeholder="Écris un message..."
               rows={1}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Écris un message..."
-              className="flex-grow resize-none p-3 rounded-lg text-sm focus:outline-none"
             />
             <button
-              onClick={() => sendMessage()}
               className="bg-muted text-white px-4 py-2 rounded-lg hover:bg-30 transition"
+              onClick={() => sendMessage()}
             >
               Envoyer
             </button>

@@ -11,18 +11,9 @@ import {
   NavbarMenu,
   NavbarMenuItem,
 } from "@heroui/navbar";
-import { link as linkStyles } from "@heroui/theme";
-import clsx from "clsx";
 
-import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  HeartFilledIcon,
-  SearchIcon,
-} from "@/components/icons";
+import { SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
 
 export const Navbar = () => {
@@ -66,7 +57,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       {/* Droite : Boutons selon l'état connecté ou pas */}
-      <NavbarContent justify="end" className="hidden sm:flex gap-4">
+      <NavbarContent className="hidden sm:flex gap-4" justify="end">
         {!isLoggedIn ? (
           <></>
         ) : (
