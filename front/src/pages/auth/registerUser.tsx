@@ -16,14 +16,14 @@ export default function RegisterPage() {
   const previous = () => setStep(step - 1);
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-default-50 shadow-xl rounded-2xl space-y-6">
+      <h1 className="text-2xl font-bold text-default-800">
         {step === 1
           ? "Création de compte : Vos informations personnelles"
           : "Création de compte : Votre véhicule"}
       </h1>
 
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-default-600">
         {step === 1
           ? "Veuillez renseigner vos informations pour créer votre compte."
           : "Vous pouvez dès à présent renseigner les données de votre véhicule, ou alors vous pourrez le faire plus tard, depuis votre compte."}
