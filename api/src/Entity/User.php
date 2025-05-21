@@ -46,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups(['user:read', 'user:create', 'user:update'])]
+    #[Groups(['user:read', 'user:create', 'user:update', 'interventions_pdf::read'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -60,24 +60,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
+    #[Groups(['interventions_pdf::read', 'user:create', 'user:read', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $title = null;
 
+    #[Groups(['interventions_pdf::read', 'user:create', 'user:read', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $societyName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:read', 'user:update'])]
+    #[Groups(['interventions_pdf::read', 'user:create', 'user:read',  'user:update'])]
     private ?string $lastname = null;
 
+    #[Groups(['interventions_pdf::read', 'user:create', 'user:read',  'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $firstname = null;
 
+    #[Groups(['interventions_pdf::read', 'user:create', 'user:read', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
@@ -95,12 +95,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:update'])]
     private Collection $cars;
 
+    #[Groups(['interventions_pdf::read', 'user:create', 'user:read', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $driverFirstname = null;
 
+    #[Groups(['interventions_pdf::read', 'user:create', 'user:read', 'user:update'])]
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:create', 'user:read', 'user:update'])]
     private ?string $driverLastname = null;
 
     public function __construct()

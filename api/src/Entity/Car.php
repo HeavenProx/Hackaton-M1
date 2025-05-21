@@ -37,15 +37,15 @@ class Car
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['car:write', 'car:read', 'user:read'])]
+    #[Groups(['car:write', 'car:read', 'user:read', 'interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $brand = null;
 
-    #[Groups(['car:write', 'car:read', 'user:read'])]
+    #[Groups(['car:write', 'car:read', 'user:read', 'interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $model = null;
 
-    #[Groups(['car:write', 'car:read', 'user:read'])]
+    #[Groups(['car:write', 'car:read', 'user:read', 'interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $registration = null;
 
@@ -57,7 +57,7 @@ class Car
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $entryCirculationDate = null;
 
-    #[Groups(['car:write', 'car:read', 'user:read'])]
+    #[Groups(['car:write', 'car:read', 'user:read', 'interventions_pdf::read'])]
     #[ORM\Column]
     private ?float $distance = null;
 

@@ -1,6 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import {
+  Input,
+  Button,
+  ScrollShadow,
+  Card,
+  CardBody,
+  Form,
+  Chip,
+} from "@heroui/react";
 
-import { title } from "@/components/primitives";
+import { SendIcon } from "@/components/icons/ChatIcons";
 import DefaultLayout from "@/layouts/default";
 
 type Message = {
@@ -13,112 +22,196 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       from: "bot",
-      text: "Salut ! Comment puis-je t’aider aujourd’hui ?",
+      text: "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
       suggestions: [
-        "J’ai une question",
-        "Prendre un rendez-vous",
-        "J'ai une panne",
+        "Problème moteur",
+        "Problème de freins",
+        "Vidange",
+        "Pneus",
       ],
     },
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const sendMessage = (msgText?: string) => {
+  // Auto-scroll to the bottom when new messages arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Focus input on mount
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  const sendMessage = async (msgText?: string) => {
     const messageToSend = msgText ?? input;
 
     if (!messageToSend.trim()) return;
 
-    // Ajout du message utilisateur
+    // Add user message to chat
     setMessages((prev) => [...prev, { from: "user", text: messageToSend }]);
     setInput("");
+    setIsLoading(true);
 
-    // Réponse du bot (à remplacer par un appel API plus tard)
-    setTimeout(() => {
+    // Add a delay to simulate a longer request
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/chatbot/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/ld+json",
+          Authorization:
+            "Bearer TpGtBWHXveMFhd1AVVyuHvrykIfcHZjXfCL7uthxftwpwEiqPGMNFU",
+        },
+        body: JSON.stringify({
+          message: messageToSend,
+        }),
+      });
+
+      const data = await response.json();
+
+      const botMessage =
+        data.parsed?.text || data.raw_response || "Je n'ai pas compris.";
+      const suggestions = data.parsed?.suggestions || [];
+
       setMessages((prev) => [
         ...prev,
         {
           from: "bot",
-          text: "Tu peux choisir une option ci-dessous :",
-          suggestions: [
-            "Voir les horaires",
-            "Prendre RDV",
-            "Parler à un humain",
-          ],
+          text: botMessage,
+          suggestions: suggestions.length > 0 ? suggestions : undefined,
         },
       ]);
-    }, 600);
-  };
+    } catch (error) {
+      console.error("Erreur lors de l'appel au chatbot :", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          from: "bot",
+          text: "Une erreur est survenue lors de la communication avec le serveur.",
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
+      // Refocus input after sending
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 0);
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    sendMessage(suggestion);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendMessage();
   };
 
   return (
     <DefaultLayout>
-      <section className="flex flex-col items-center justify-center py-3 h-[90vh]">
-        <div className="inline-block text-center justify-center">
-          <h1 className={`${title()} text-xs`}>
-            Notre assistant va s&apos;occuper de vous
-          </h1>
+      <div className="flex flex-col h-[87vh]">
+        <div className="flex justify-between items-center mb-4  max-w-3xl mx-auto">
+          <h1 className="text-2xl font-bold">Assistant Garage Folie</h1>
         </div>
 
-        <div className="flex flex-col w-full max-w-3xl h-full rounded-lg bg-30 shadow p-4 mt-6">
-          {/* Zone des messages */}
-          <div className="flex-1 overflow-y-auto space-y-4 mb-4 px-1">
-            {messages.map((msg, i) => (
+        {/* Chat messages area */}
+        <ScrollShadow
+          ref={scrollRef}
+          className="h-full p-4"
+          hideScrollBar={false}
+        >
+          <div className="flex flex-col gap-4 pb-6 max-w-3xl mx-auto">
+            {messages.map((message, index) => (
               <div
-                key={i}
-                className={`max-w-[75%] px-4 py-2 rounded-lg text-sm whitespace-pre-line ${
-                  msg.from === "user"
-                    ? "bg-10 text-foreground self-end ml-auto"
-                    : "text-foreground bg-muted self-start"
+                key={index}
+                className={`flex ${
+                  message.from === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                <div>{msg.text}</div>
+                <Card
+                  className={`max-w-[80%] shadow-sm ${
+                    message.from === "user"
+                      ? "bg-primary text-white"
+                      : "bg-default-50"
+                  }`}
+                >
+                  <CardBody className="py-2 px-3">
+                    <p className="whitespace-pre-wrap">{message.text}</p>
 
-                {msg.suggestions && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {msg.suggestions.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        className="bg-white-30 text-foreground px-3 py-1 rounded-md text-sm hover:bg-white-10 border border-2 transition"
-                        onClick={() => handleSuggestionClick(suggestion)}
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                    {/* Suggestions */}
+                    {message.suggestions && message.suggestions.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {message.suggestions.map((suggestion, idx) => (
+                          <Button
+                            key={idx}
+                            color="primary"
+                            variant={message.from === "user" ? "flat" : "solid"}
+                            onPress={() => sendMessage(suggestion)}
+                            size="sm"
+                            radius="full"
+                          >
+                            {suggestion}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+                  </CardBody>
+                </Card>
               </div>
             ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <Card
+                  className="bg-default-50 shadow-sm"
+                  style={{ borderRadius: "0.5rem 0.5rem 0.5rem 0" }}
+                >
+                  <CardBody className="py-2 px-3">
+                    <div className="flex space-x-2">
+                      <div className="w-2 h-2 rounded-full bg-default-300 animate-pulse" />
+                      <div className="w-2 h-2 rounded-full bg-default-300 animate-pulse delay-150" />
+                      <div className="w-2 h-2 rounded-full bg-default-300 animate-pulse delay-300" />
+                    </div>
+                  </CardBody>
+                </Card>
+              </div>
+            )}
           </div>
+        </ScrollShadow>
 
-          {/* Champ de saisie */}
-          <div className="flex gap-2">
-            <textarea
-              className="flex-grow resize-none p-3 rounded-lg text-sm focus:outline-none"
-              placeholder="Écris un message..."
-              rows={1}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-            <button
-              className="bg-muted text-white px-4 py-2 rounded-lg hover:bg-30 transition"
-              onClick={() => sendMessage()}
-            >
-              Envoyer
-            </button>
-          </div>
-        </div>
-      </section>
+        {/* Input area with Form */}
+        <Form
+          className="flex flex-row gap-2 max-w-3xl w-full mx-auto"
+          onSubmit={handleSubmit}
+        >
+          <Input
+            ref={inputRef}
+            fullWidth
+            disabled={isLoading}
+            name="message"
+            placeholder="Écrivez votre message..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <Button
+            isIconOnly
+            color="primary"
+            isDisabled={!input.trim().length || isLoading}
+            isLoading={isLoading}
+            type="submit"
+          >
+            <SendIcon />
+          </Button>
+        </Form>
+      </div>
     </DefaultLayout>
   );
 }
