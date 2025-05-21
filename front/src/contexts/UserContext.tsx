@@ -13,24 +13,31 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
 
   const login = async (email: string, password: string): Promise<void> => {
-    // try {
-    //   const res = await fetch('/api/login', {
-    //     method: 'GET',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ email, password }),
-    //   });
+    const res = await fetch('http://127.0.0.1:8000/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
 
-    //   if (!res.ok) throw new Error('Login échoué');
+    if (!res.ok) throw new Error('Email ou mot de passe incorrect');
 
-    //   const data = await res.json();
-    //   setUser(data.user);
-    //   setToken(data.token);
-    //   setIsAuthenticated(true);
-    //   localStorage.setItem('token', data.token);
-    // } catch (error) {
-    //   console.error('Erreur login:', error);
-    //   throw error;
-    // }
+    const data = await res.json();
+    const token = data.token;
+
+    const userRes = await fetch('http://127.0.0.1:8000/users', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const user = await userRes.json();
+    if (!user) throw new Error("Utilisateur non trouvé");
+
+    setUser(user);
+    setToken(token);
+    setIsAuthenticated(true);
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
   };
 
   const register = async (email: string, password: string, firstname?: string, lastname?: string, phoneNumber?: string, title?: string, societyName?: string, isDriver?: boolean, driverFirstname?: string, driverLastname?: string, driverPhoneNumber?: string): Promise<void> => {
