@@ -6,6 +6,7 @@ import {
   Text,
   View,
   StyleSheet,
+    pdf
 } from "@react-pdf/renderer";
 import { Button } from "@heroui/react";
 
@@ -146,10 +147,10 @@ interface PDFButtonProps {
 export default function PDFButton({ interventionId }: PDFButtonProps) {
   const [data, setData] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const token =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4NDUzODcsImV4cCI6MTc0Nzg0ODk4Nywicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiamVhbi5kdXBvbnRAZXhhbXBsZS5jb20ifQ.vgzvIsgxvdVj8LJNvDSbLVWmxMJ5J8Ia9RZAtNQd1XDSRSOCqevq3c9OU_1p6wFeD0RXbK84zdVHrm5DwfT0inCYJ4Cj4_T3HgJAE-Am-xJkBj0SbhuSjxm8RVIzq02huZwVxjZA5pn_-3P-wJvwRfA-Sqt0z5Q1v22xUNLxTHHdkKaXYi30tIQXg6pbnihyLlg2EgrrzdFpNV5UhzjqF5XHbkfbLf4dAVKy16_wQb24Cin3oycrcZtsHRLTYSgq-IEDOGx_Uyl_a3VLkk2D23fHMgxg_mcUHmioekjOGeZr8kuM12GZNz_x2aFW67WVyX45ah92YFrOrLhJo8lKhNJ2TEX1UPdd9HE_siq9_WbbJTti779qrIq-qkyb17tfpdRg5tIY2Ehh8Ivcs3BmnfA1UyUQgRzsS_LnS5DVGah6pEWZBndIFJ_lYPivBX5G_1Gdi38sGIWrc2taCf-tHt4VOkACBphh2EZxBV31ovEqeNmqVpTL5tIwr3rbPhUqFdGOcv8SL8_Mdk_lbUhsmAGbhBjcAx_o6QmpowJQP-j9fOAOzLr0zjcVsBY0ECzehODbAZDYTmKJpvJXBKTQBiHb4SgzWbxZ5wqNnuL5gc_-g63zcB72qPIVW3Nvf2YjzkZ1f0_Mj2k7ASsdptnt8HrhC2nib7vfqXLk-7QjfAs";
 
-  useEffect(() => {
-    const token =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4MzA3MzEsImV4cCI6MTc0NzgzNDMzMSwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiamVhbi5kdXBvbnRAZXhhbXBsZS5jb20ifQ.U48kMbqBqInlvxgmSrSdmtWaYhU1Vl--T_W-ha487-eizr0gGbDNKC9Jeq9AGkga3slzRfo52e5hMix_7kF_OcMNU12kPaBsxq2ii_DFt2fHweSSlpuFsMkXIGLwe5byNeRC1PwvgnhKmHr5NcVzKOvqzbiMjdCw1g0obY6dGeQ7cu59AQetQ3Ux05DMdCiEcpudnVqCqSsi5uArXBeSOa75qV7aDTaSj4JpaF9YCbF76gfMq9HD95QlCMl1M9wPbzgbNF7DDhxJuy-qbDXhSa-A5YFPisM0CFDuUBja27enpRntw433H9PIrUZiHw004ZOyL-H5rDb0MpjrOYxGZL_6He1PZp1CHbWqbZX39OgtWfptxrVPH9dtSn90c9S98mMb9SlAX8hNQZgZMPZMGfflVGKHnZ0__O36iudtG_bA6SMQmnrEtRalcdkFV6w4XxtuMY7RMj9TBaabU2R8YZX3sFjxUvGGhErIUMHrXxq8-80ZhWoR_0jACLx1A-TzcehcZcX5s8FHUbhnzycgRe1qQUB788yYg90A1YvVLG24vzFr4aq_wE0gt3w-_X1MmZ-h72jK9ME0HnIg4GZPmI6ODW2AgO-H-eH8J07uj_y9brwiLSPMYNfQDFMpmhhD_gZzBp_s0XDaa7bRaYO3Skze7P3YWv21EHhZPliLbJE"; // Retrieve the token from localStorage
+    useEffect(() => {
 
     // Fetch data from the API with the token
     fetch(`http://localhost:8000/interventions/${interventionId}/pdf`, {
@@ -161,21 +162,45 @@ export default function PDFButton({ interventionId }: PDFButtonProps) {
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
-
         return response.json();
       })
       .then((data) => setData(data))
       .catch((error) => console.error("Error fetching data:", error));
   }, [interventionId]);
 
-  const handleDownloadClick = () => {
-    setIsGenerating(true);
-    setTimeout(() => {
-      setIsGenerating(false);
-    }, 1500); // Delay for download trigger
-  };
+    const handleDownloadClick = async () => {
+        setIsGenerating(true);
 
-  if (!data) {
+        try {
+            // Génération du blob PDF à partir de ton composant PDF
+            const blob = await pdf(<MyPDF data={data} />).toBlob();
+
+            const formData = new FormData();
+            formData.append("file", new File([blob], "compte_rendu_chatbot.pdf", { type: "application/pdf" }));
+            formData.append("emailClient", data["car"]["user"]["email"]);
+
+            const response = await fetch("http://localhost:8000/api/send-mail-pdf", {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Add the token in the header
+                },
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error("Échec de l'envoi du PDF");
+            }
+
+            console.log("PDF envoyé avec succès");
+        } catch (error) {
+            console.error("Erreur lors de l'envoi du PDF :", error);
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+
+    if (!data) {
     return <p>Loading...</p>;
   }
 
