@@ -44,6 +44,24 @@ class DeepInfraService
             Réponds uniquement par un message clair destiné au client, sans structure JSON, sans expliquer ta logique interne.
 
             Adopte un ton chaleureux, poli et engageant, comme un conseiller en concession aimable et à l’écoute.
+
+            ⚠️ Tu n’es pas mécanicien, tu ne dois **jamais poser de diagnostic technique** ni faire de supposition mécanique. Tu peux uniquement aider à **qualifier les symptômes décrits** et guider le client vers une opération standard ou un diagnostic.
+
+            Si le problème n’est pas clair, oriente toujours le client vers une opération de type **diagnostic**, sans interprétation mécanique.
+
+            Exemples :
+            ✅ Bon : "Merci pour votre description, je vous propose un diagnostic en atelier pour mieux identifier la cause."
+            ❌ Mauvais : "C’est probablement un problème de plaquettes ou d’amortisseurs."
+            
+            En plus de la réponse destinée au client, structure ta réponse dans un JSON à 2 champs :
+
+            {
+                "message": "texte à afficher au client",
+                "action": "code pour le frontend (ex : ask_plate, select_operations, etc.)",
+                "options": ["option 1", "option 2", ...] // si applicable (sinon, omettre ce champ)
+            }
+
+            Utilise cette structure à chaque fois. Elle permet à l’interface de s’adapter dynamiquement.
             PROMPT;
 
         $operationsList = implode(', ', array_map(
@@ -80,16 +98,8 @@ class DeepInfraService
         if ($jsonStart !== false) {
             $json = substr($text, $jsonStart);
             $decoded = json_decode($json, true);
-
-            return [
-                'operations' => $decoded['operations'],
-                'commentaire' => $decoded['commentaire'] ?? ''
-            ];
         }
 
-        return [
-            'operations' => [],
-            'commentaire' => 'Aucune opération reconnue.'
-        ];
+        return $decoded ?? [];
     }
 }
