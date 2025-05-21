@@ -1,0 +1,15 @@
+﻿email;plainPassword;roles;title;lastname;firstname;address;phoneNumber;driver;driverFirstname;driverLastname;driverPhoneNumber
+jean.dupont@example.com;$Password0;["ROLE_USER"];M.;Dupont;Jean;12 rue de Paris, 75001 Paris;0612345678;;;;
+marie.durand@example.com;$Password0;["ROLE_USER","ROLE_ADMIN"];Mme;Durand;Marie;5 avenue Victor Hugo, 75016 Paris;0623456789;;;;
+societe.translog@example.com;$Password0;["ROLE_USER","ROLE_DISPATCH"];Entreprise;Translog;NA;1 zone industrielle, 13000 Marseille;0465432198;false;Paul;Martin;0645123987
+emma.bernard@example.com;$Password0;["ROLE_USER"];Mme;Bernard;Emma;28 rue de Rivoli, 75004 Paris;0645678901;;;;
+logistique.express@example.com;$Password0;["ROLE_USER","ROLE_MANAGER"];Entreprise;LogExpress;NA;15 rue du Port, 59000 Lille;0321234567;false;Sophie;Durand;0654789210
+luc.martin@example.com;$Password0;["ROLE_USER"];M.;Martin;Luc;10 boulevard Haussmann, 75009 Paris;0634567890;;;;
+julie.perez@example.com;$Password0;["ROLE_USER"];Mme;Perez;Julie;20 avenue de Clichy, 75017 Paris;0689012345;;;;
+deliveryplus@example.com;$Password0;["ROLE_USER"];Entreprise;DeliveryPlus;NA;66 boulevard Haussmann, 75009 Paris;0145051122;false;Amine;Chalabi;0678945123
+maxime.legrand@example.com;$Password0;["ROLE_USER"];M.;Legrand;Maxime;22 rue des Martyrs, 75009 Paris;0690123456;;;;
+camille.blanc@example.com;$Password0;["ROLE_USER"];Mme;Blanc;Camille;11 rue Oberkampf, 75011 Paris;0601234567;;;;
+nicolas.giraud@example.com;$Password0;["ROLE_USER"];M.;Giraud;Nicolas;31 avenue de l'Opéra, 75002 Paris;0612345679;;;;
+aurelie.vincent@example.com;$Password0;["ROLE_USER","ROLE_ADMIN"];Mme;Vincent;Aurélie;40 rue de Sèvres, 75007 Paris;0623456780;;;;
+cedric.lemoine@example.com;$Password0;["ROLE_USER"];M.;Lemoine;Cédric;50 avenue Montaigne, 75008 Paris;0634567801;;;;
+florent.marchand@example.com;$Password0;["ROLE_USER"];M.;Marchand;Florent;70 rue Saint-Honoré, 75001 Paris;0656780123;;;;
