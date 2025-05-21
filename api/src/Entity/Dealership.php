@@ -7,6 +7,7 @@ use App\Repository\DealershipRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DealershipRepository::class)]
 #[ApiResource]
@@ -17,12 +18,15 @@ class Dealership
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $dealership_name = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
