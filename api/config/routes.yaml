@@ -7,3 +7,8 @@ refresh_token:
 
 logout:
   path: /logout
+
+api_send_mail:
+  path: /api/send-mail
+  controller: App\Controller\SendEmailController
+  methods: [POST]
