@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Button } from "@heroui/react";
 import { format, startOfWeek, addDays } from "date-fns";
 import fr from "date-fns/locale/fr";
@@ -9,21 +9,38 @@ import fr from "date-fns/locale/fr";
 export default function PlanningModal() {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState<{ day: string; slot: string } | null>(null);
+    const [disabledSlots, setDisabledSlots] = useState<{ day: string; slot: string }[]>([]);
 
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
 
-    const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 }); // Lundi
+    const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
 
-    const slots = ["09:00 - 10:30","10:30 - 12:00","13:00 - 14:30","14:30 - 16:00", "16:00 - 17:30"];
+    const slots = ["09:00 - 10:30", "10:30 - 12:00", "13:00 - 14:30", "14:30 - 16:00", "16:00 - 17:30"];
 
     const days = Array.from({ length: 5 }, (_, i) =>
         format(addDays(weekStart, i), "EEEE dd/MM", { locale: fr })
     );
 
-    const handleSlotClick = (day: string, slot: string) => {
-        setSelectedSlot({ day, slot });
+    useEffect(() => {
+        // Créneaux désactivés aléatoirement (20% des créneaux)
+        const disabled: { day: string; slot: string }[] = [];
+        days.forEach((day) => {
+            slots.forEach((slot) => {
+                if (Math.random() < 0.2) {
+                    disabled.push({ day, slot });
+                }
+            });
+        });
+        setDisabledSlots(disabled);
+    }, []);
 
+    const isDisabled = (day: string, slot: string) =>
+        disabledSlots.some((s) => s.day === day && s.slot === slot);
+
+    const handleSlotClick = (day: string, slot: string) => {
+        if (isDisabled(day, slot)) return; // Empêche le clic si désactivé
+        setSelectedSlot({ day, slot });
         console.log(`Créneau choisi : ${day} ${slot}`);
     };
 
@@ -65,7 +82,7 @@ export default function PlanningModal() {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                                     {days.map((day) => (
                                         <div key={day}>
-                                            <h3 className="text-sm font-semibold mb-2">{day}</h3>
+                                            <h3 className="text-sm font-semibold mb-2 text-center">{day}</h3>
                                             <div className="flex flex-col gap-2">
                                                 {slots.map((slot) => (
                                                     <Button
@@ -76,11 +93,15 @@ export default function PlanningModal() {
                                                                 : "light"
                                                         }
                                                         color={
-                                                            selectedSlot?.day === day && selectedSlot?.slot === slot
-                                                                ? "primary"
-                                                                : "default"
+                                                            isDisabled(day, slot)
+                                                                ? "default"
+                                                                : selectedSlot?.day === day && selectedSlot?.slot === slot
+                                                                    ? "primary"
+                                                                    : "default"
                                                         }
                                                         onClick={() => handleSlotClick(day, slot)}
+                                                        disabled={isDisabled(day, slot)}
+                                                        className={isDisabled(day, slot) ? "opacity-50 cursor-not-allowed" : ""}
                                                     >
                                                         {slot}
                                                     </Button>
@@ -94,7 +115,10 @@ export default function PlanningModal() {
                                     <Button variant="ghost" onClick={closeModal}>
                                         Annuler
                                     </Button>
-                                    <Button color="primary" onClick={closeModal}>
+                                    <Button color="secondary" variant="ghost" onClick={closeModal}>
+                                        Aucun créneau ne me convient
+                                    </Button>
+                                    <Button color="primary" onClick={closeModal} disabled={!selectedSlot}>
                                         Confirmer
                                     </Button>
                                 </div>
@@ -104,5 +128,5 @@ export default function PlanningModal() {
                 </Dialog>
             </Transition>
         </>
-);
+    );
 }
