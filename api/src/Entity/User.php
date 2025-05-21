@@ -61,24 +61,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
+    private ?string $societyName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $address = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $phoneNumber = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $driver = null;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
+    private ?bool $isDriver = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $driverPhoneNumber = null;
 
     /**
@@ -88,9 +95,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $cars;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $driverFirstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:create', 'user:update'])]
     private ?string $driverLastname = null;
 
     public function __construct()
@@ -191,6 +200,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getSocietyName(): ?string
+    {
+        return $this->societyName;
+    }
+
+    public function setSocietyName(string $societyName): static
+    {
+        $this->societyName = $societyName;
+
+        return $this;
+    }
+
     public function getLastname(): ?string
     {
         return $this->lastname;
@@ -215,18 +236,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(string $address): static
-    {
-        $this->address = $address;
-
-        return $this;
-    }
-
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
@@ -239,15 +248,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isDriver(): ?bool
+    public function getIsDriver(): ?bool
     {
-        return $this->driver;
+        return $this->isDriver;
     }
 
-    public function setDriver(bool $driver): static
+    public function setIsDriver(?bool $isDriver): static
     {
-        $this->driver = $driver;
-
+        $this->isDriver = $isDriver;
         return $this;
     }
 
