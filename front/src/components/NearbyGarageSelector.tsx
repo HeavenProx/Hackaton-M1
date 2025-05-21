@@ -96,18 +96,18 @@ export default function NearbyGarageSelector({
               <ModalBody>
                 {/* LocationSearch added above the map */}
                 <div className="mb-4">
-                  <LocationSearch 
-                    onLocationSelect={handleLocationSelect} 
-                    className="w-full" 
-                    placeholder="Recherchez une adresse"
+                  <LocationSearch
+                    className="w-full"
                     label="Trouver une localisation"
+                    placeholder="Recherchez une adresse"
+                    onLocationSelect={handleLocationSelect}
                   />
                 </div>
 
                 <MapBoxContainer
                   selectedDealership={selectedDealership}
-                  onDealershipSelect={handleDealershipSelect}
                   selectedLocation={selectedLocation}
+                  onDealershipSelect={handleDealershipSelect}
                 />
 
                 <div className="mt-4">

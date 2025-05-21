@@ -7,7 +7,7 @@ import NearbyGarageSelector from "@/components/NearbyGarageSelector";
 import { useUser } from "@/contexts/UserContext";
 
 export default function IndexPage() {
-  const {user} = useUser();
+  const { user } = useUser();
   const disclosure = useDisclosure();
 
   return (
@@ -31,7 +31,7 @@ export default function IndexPage() {
           open NearbyGarageSelector
         </Button>
       </div>
-      
+
       <NearbyGarageSelector disclosure={disclosure} />
     </DefaultLayout>
   );
