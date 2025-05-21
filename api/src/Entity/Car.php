@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CarRepository::class)]
 #[ApiResource]
@@ -18,12 +19,15 @@ class Car
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $brand = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $model = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255)]
     private ?string $registration = null;
 
@@ -33,6 +37,7 @@ class Car
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $entryCirculationDate = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column]
     private ?float $distance = null;
 

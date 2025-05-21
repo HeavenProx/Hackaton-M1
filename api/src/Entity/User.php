@@ -46,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups(['user:read', 'user:create', 'user:update'])]
+    #[Groups(['user:read', 'user:create', 'user:update','interventions_pdf::read'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -60,18 +60,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastname = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phoneNumber = null;
 
@@ -87,9 +91,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Car::class, mappedBy: 'user')]
     private Collection $cars;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $driverFirstname = null;
 
+    #[Groups(['interventions_pdf::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $driverLastname = null;
 
