@@ -205,6 +205,9 @@ export default function CarPart({ onPrevious, formData }: Props) {
           <Input
             {...register("carLicence")}
             isRequired
+            type="text"
+            pattern="[A-Z]{2}-[0-9]{3}-[A-Z]{2}"
+            placeholder="AA-123-BB"
             label="Immatriculation"
           />
           <Input {...register("carVin")} isRequired label="Numéro VIN" />
