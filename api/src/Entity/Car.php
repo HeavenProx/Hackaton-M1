@@ -25,6 +25,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Put(),
         new Patch(),
         new Delete(),
+        new GetCollection(
+            uriTemplate: '/cars/{id}/interventions',
+            normalizationContext: ['groups' => ['interventions_list::read']],
+        )
     ],
     normalizationContext: ['groups' => ['car:read']],
     denormalizationContext: ['groups' => ['car:write']],
@@ -37,11 +41,11 @@ class Car
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['car:write', 'car:read', 'user:read', 'interventions_pdf::read'])]
+    #[Groups(['car:write', 'car:read', 'user:read', 'interventions_pdf::read', 'interventions_list::read'])]
     #[ORM\Column(length: 255)]
     private ?string $brand = null;
 
-    #[Groups(['car:write', 'car:read', 'user:read', 'interventions_pdf::read'])]
+    #[Groups(['car:write', 'car:read', 'user:read', 'interventions_pdf::read', 'interventions_list::read'])]
     #[ORM\Column(length: 255)]
     private ?string $model = null;
 
@@ -69,6 +73,7 @@ class Car
      * @var Collection<int, Intervention>
      */
     #[ORM\OneToMany(targetEntity: Intervention::class, mappedBy: 'car')]
+    #[Groups(['interventions_list::read'])]
     private Collection $interventions;
 
     public function __construct()

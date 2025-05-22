@@ -20,11 +20,11 @@ class Operation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['interventions_pdf::read'])]
+    #[Groups(['interventions_pdf::read','interventions_list::read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['interventions_pdf::read'])]
+    #[Groups(['interventions_pdf::read','interventions_list::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $category = null;
 
@@ -38,7 +38,7 @@ class Operation
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $duration = null;
 
-    #[Groups(['interventions_pdf::read'])]
+    #[Groups(['interventions_pdf::read','interventions_list::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $price = null;
 

@@ -11,18 +11,22 @@ import { Link } from "react-router-dom";
 
 import { useUser } from "@/contexts/UserContext";
 import DefaultLayout from "@/layouts/default";
+import PDFButton from "@/components/PdfGenerate.tsx";
 
 export const VehiclesPage = () => {
   const { user, token } = useUser();
   const [vehicleList, setVehicleList] = useState<any[]>([]);
   const [carToDelete, setCarToDelete] = useState<any | null>(null);
+  const [carHistory, setCarHistory] = useState<any | null>(null);
+  const [carInterventions, setCarInterventions] = useState<any[]>([]);
+  const [loadingInterventions, setLoadingInterventions] =
+    useState<boolean>(false);
   const [editingCarId, setEditingCarId] = useState<string | null>(null);
   const [newDistance, setNewDistance] = useState<string>("");
   const [distanceErrors, setDistanceErrors] = useState<
     Record<string, string | null>
   >({});
 
-  // Met à jour la liste locale quand le user change
   useEffect(() => {
     setVehicleList(user?.cars || []);
   }, [user]);
@@ -126,6 +130,46 @@ export const VehiclesPage = () => {
     }
   };
 
+  // Fetch des interventions à l'ouverture de la modale
+  useEffect(() => {
+    if (!carHistory) return;
+
+    const fetchInterventions = async () => {
+      const carId = extractCarId(carHistory["@id"]);
+
+      setLoadingInterventions(true);
+
+      try {
+        const res = await fetch(
+          `http://localhost:8000/cars/${carId}/interventions`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!res.ok) throw new Error("Erreur récupération interventions");
+
+        const data = await res.json();
+
+        console.log(data["member"][0]["interventions"]);
+        setCarInterventions(data["member"][0]["interventions"] || []);
+      } catch (err) {
+        console.error(err);
+        addToast({
+          title: "Erreur",
+          description: "Impossible de récupérer l'historique.",
+          color: "danger",
+        });
+      } finally {
+        setLoadingInterventions(false);
+      }
+    };
+
+    fetchInterventions();
+  }, [carHistory]);
+
   return (
     <DefaultLayout>
       <div className="mt-[30px] p-4 max-w-6xl mx-auto">
@@ -203,16 +247,18 @@ export const VehiclesPage = () => {
                       </>
                     )}
                   </p>
-
                   {distanceErrors[car["@id"]] && (
                     <p className="text-sm text-red-600">
                       {distanceErrors[car["@id"]]}
                     </p>
                   )}
                 </CardBody>
-                <CardFooter>
+                <CardFooter className="flex justify-between items-center">
                   <Button color="danger" onClick={() => setCarToDelete(car)}>
                     Supprimer
+                  </Button>
+                  <Button color="secondary" onClick={() => setCarHistory(car)}>
+                    Historique interventions
                   </Button>
                 </CardFooter>
               </Card>
@@ -237,6 +283,60 @@ export const VehiclesPage = () => {
                 Supprimer
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {carHistory && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white dark:bg-default-100 p-8 rounded-xl shadow-xl max-w-4xl w-full space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">
+                Historique des interventions
+              </h2>
+              <Button variant="ghost" onClick={() => setCarHistory(null)}>
+                Fermer
+              </Button>
+            </div>
+
+            {loadingInterventions ? (
+              <p className="text-center">Chargement des interventions...</p>
+            ) : carInterventions.length === 0 ? (
+              <p className="text-center text-default-500">
+                Aucune intervention trouvée pour ce véhicule.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border rounded-md">
+                  <thead className="bg-gray-100 dark:bg-default-50">
+                    <tr>
+                      <th className="px-4 py-2 text-left">Date</th>
+                      <th className="px-4 py-2 text-left">Description</th>
+                      <th className="px-4 py-2 text-left">Garage </th>
+                      <th className="px-4 py-2 text-left">Compte rendu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {carInterventions.map((intervention: any) => (
+                      <tr key={intervention["@id"]} className="border-t">
+                        <td className="px-4 py-2">
+                          {formatDate(intervention.date)}
+                        </td>
+                        <td className="px-4 py-2">{intervention.diagnostic}</td>
+                        <td className="px-4 py-2">
+                          {intervention.garage.dealership_name}
+                        </td>
+                        <td className="px-4 py-2">
+                          <PDFButton
+                            interventionId={intervention["@id"].split("/")[2]}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       )}

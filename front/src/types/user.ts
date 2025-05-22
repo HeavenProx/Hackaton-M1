@@ -38,7 +38,7 @@ export type UserContextType = {
     isDriver?: boolean,
     driverFirstname?: string,
     driverLastname?: string,
-    driverPhoneNumber?: string
+    driverPhoneNumber?: string,
   ) => Promise<void>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => Promise<void>;

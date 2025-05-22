@@ -2,10 +2,19 @@ import { useState } from "react";
 
 import { useUser } from "@/contexts/UserContext";
 
+export type Step =
+  | "welcome"
+  | "ask_plate"
+  | "select_operations"
+  | "ask_location"
+  | "select_slot"
+  | "confirm_appointment";
+
 export type Message = {
   role: "user" | "system";
   content: string;
   options?: string[];
+  action?: Step;
   message?: string;
 };
 
