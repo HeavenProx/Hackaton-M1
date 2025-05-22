@@ -39,9 +39,15 @@ export default function PlanningModal() {
         disabledSlots.some((s) => s.day === day && s.slot === slot);
 
     const handleSlotClick = (day: string, slot: string) => {
-        if (isDisabled(day, slot)) return; // Empêche le clic si désactivé
+        if (isDisabled(day, slot)) return; // Prevent click if disabled
+
+        const [startTime] = slot.split(" - "); // Extract the start time
+        const selectedDate = new Date(`${day.split(" ")[1]}T${startTime}:00`); // Combine day and time
+
+        const formattedDate = format(selectedDate, "yyyy-MM-dd HH:mm:ss"); // Format the date
+        console.log("Selected DateTime:", formattedDate); // Log the formatted date
+
         setSelectedSlot({ day, slot });
-        console.log(`Créneau choisi : ${day} ${slot}`);
     };
 
     return (
