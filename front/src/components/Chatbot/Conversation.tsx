@@ -66,21 +66,19 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
   };
 
   return (
-    <ScrollShadow ref={scrollRef} className="h-full p-4" hideScrollBar={false}>
-      <div className="flex flex-col gap-4 pb-6 max-w-3xl mx-auto">
+    <ScrollShadow ref={scrollRef} className="h-full px-4 py-[30px]" hideScrollBar={false}>
+      <div className="flex flex-col gap-4 pb-6 max-w-3xl mx-auto max-h-[58svh]">
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`flex ${
-              message.role === "user" ? "justify-end" : "justify-start"
-            }`}
+            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+              }`}
           >
             <Card
-              className={`max-w-[80%] shadow-sm ${
-                message.role === "user"
-                  ? "bg-primary text-white"
-                  : "bg-default-50"
-              }`}
+              className={`max-w-[80%] shadow-sm ${message.role === "user"
+                ? "bg-primary text-white"
+                : "bg-default-50"
+                }`}
             >
               <CardBody className="py-2 px-3">
                 <p className="whitespace-pre-wrap">{message.content}</p>
