@@ -11,19 +11,11 @@ import {
 
 import { SendIcon } from "@/components/icons/ChatIcons";
 import DefaultLayout from "@/layouts/default";
-import { Message, useChatbot } from "@/hooks/useChatbot";
-
-type FormValues = {
-  message: string;
-};
-
-type Step =
-  | "welcome"
-  | "ask_plate"
-  | "select_operations"
-  | "ask_location"
-  | "select_slot"
-  | "confirm_appointment";
+import { Message, Step, useChatbot } from "@/hooks/useChatbot";
+import Conversation from "@/components/Chatbot/Conversation";
+import MessageForm, {
+  MessageFormValues,
+} from "@/components/Chatbot/MessageForm";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
@@ -60,7 +52,9 @@ export default function ChatPage() {
 
       const botReply: Message = {
         role: "system",
-        content: botMessage,
+        content: data.message || "Je n'ai pas compris.",
+        action: data.action,
+        options: data.options,
       };
 
       setMessages((prev) => [...prev, botReply]);
@@ -81,31 +75,12 @@ export default function ChatPage() {
     },
   });
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const formValues = Object.fromEntries(formData) as FormValues;
-
-    setInput("");
-
+  const onSubmit = (values: MessageFormValues) => {
     const updatedMessages: Message[] = [
       ...messages,
       {
         role: "user",
-        content: formValues.message,
+        content: values.message,
       },
     ];
 
@@ -113,10 +88,22 @@ export default function ChatPage() {
     sendRequest(updatedMessages);
   };
 
+  const handleOptionSelect = (option: string) => {
+    // When an option is selected from buttons, treat it as a user message
+    const userMessage: Message = {
+      role: "user",
+      content: option,
+    };
+    
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    sendRequest(updatedMessages);
+  };
+
   return (
     <DefaultLayout>
       <div className="flex flex-col h-[87vh]">
-        <div className="flex justify-between items-center mb-4  max-w-3xl mx-auto">
+        <div className="flex justify-between items-center mb-4 max-w-3xl mx-auto">
           <h1 className="text-2xl font-bold">Assistant Garage Folie</h1>
         </div>
 

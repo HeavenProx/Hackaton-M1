@@ -18,14 +18,9 @@ function App() {
             <LoginForm />
           </PublicOnlyRoute>
         }
-        path="/"
+        path="/login"
       />
-      <Route
-        element={
-          <RegisterForm />
-        }
-        path="/register"
-      />
+      <Route element={<RegisterForm />} path="/register" />
 
       {/* Private only */}
       <Route
@@ -34,7 +29,7 @@ function App() {
             <ChatPage />
           </PrivateOnlyRoute>
         }
-        path="/chat"
+        path="/"
       />
       <Route
         element={

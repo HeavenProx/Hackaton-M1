@@ -18,7 +18,7 @@ class Dealership
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['interventions_pdf::read'])]
+    #[Groups(['interventions_pdf::read','interventions_list::read'])]
     #[ORM\Column(length: 255)]
     private ?string $dealership_name = null;
 

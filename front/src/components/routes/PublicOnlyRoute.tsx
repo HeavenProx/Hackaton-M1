@@ -7,5 +7,5 @@ export const PublicOnlyRoute = ({ children }: { children: JSX.Element }) => {
 
   if (isLoading) return null;
 
-  return isAuthenticated ? <Navigate to="/chat" /> : children;
+  return isAuthenticated ? <Navigate to="/" /> : children;
 };

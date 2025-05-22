@@ -7,5 +7,5 @@ export const PrivateOnlyRoute = ({ children }: { children: JSX.Element }) => {
 
   if (isLoading) return null;
 
-  return isAuthenticated ? children : <Navigate to="/" />;
+  return isAuthenticated ? children : <Navigate to="/login" />;
 };

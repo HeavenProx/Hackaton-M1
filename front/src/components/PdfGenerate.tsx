@@ -150,9 +150,9 @@ interface PDFButtonProps {
 export default function PDFButton({ interventionId }: PDFButtonProps) {
   const [data, setData] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const token =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4NTIzODQsImV4cCI6MTc0Nzg1NTk4NCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiamVhbi5kdXBvbnRAZXhhbXBsZS5jb20ifQ.WKvs5xVN8xcywzQ6bLUiNm_f8rPMkrMw1ha3dTl2fInSYsFkdyl-5FrrtbpuM3xVuSTZiUZRtR2Oygg8a3eW_14wpo2_Kacys21WFGZM4ljzr4LbIZljyaKwpDaVIfLlhWTZ46op54eUVjaJ7pnj8_kBavR4iFZvnfP-WcgiENSgQf9764EGd9eo3m2LE8eqQ7QIgYkutXS119vAmhWxWbM24_gsbtTdt5Fw7j52cef6oWvPr5LmSF18kFK0_01lbUu8kEdFfTAKPKjZke7Q7pnDgL5X-HVBq2dtakr0vE9QkKfmA0vkj1wOWeBmGMKpPBfZYDp7PCpuey05xoyjcbmcZyjIb19JBekxZxJN0vtlfQNPYbmkZIj93zsn7YChAVg0FtVRlmwXlL6H8F7j3Zp28QXhEyNxT9_OlvlH-qO5MiPjnTNkdYEbff_VepZX-Sy-BO_dTPNpTOeMEB5mHlZ4p2_3VXwqVWA8Zi6v7MQf2xBkgMGJQOBVGgi6LTJ-UNplwZ5U5nXrl0LoEjNZXa17xnu3vTvKLY-DlSevIUwS4-rY-hm6eHnz2x18MMvqqvSl_TDynRgVVjVSCrcrRBOMHFLdRRxoVh1Jn1icp5JEqkLAyNNbuflTWclptK0gv_xy8ypG4XD_uTCo9CYMATboD1otf6vs1ouQ6ubF2RU";
+  const token = localStorage.getItem("token");
 
+  console.log(interventionId);
   useEffect(() => {
     // Fetch data from the API with the token
     fetch(`http://localhost:8000/interventions/${interventionId}/pdf`, {
