@@ -102,7 +102,7 @@ export default function ChatPage() {
 
   return (
     <DefaultLayout>
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col min-h-[inherit]">
         <div className="flex justify-between items-center mb-4 max-w-3xl mx-auto">
           <h1 className="text-2xl font-bold">Assistant Garage Folie</h1>
         </div>
