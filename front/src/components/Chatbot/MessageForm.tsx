@@ -17,14 +17,14 @@ const MessageForm = ({ onSubmit, isLoading }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (inputRef.current) {
+    if (inputRef.current && !isLoading) {
       inputRef.current.focus();
     }
-  }, []);
+  }, [isLoading]);
 
   return (
     <Form
-      className="flex flex-row gap-2 max-w-3xl w-full mx-auto"
+      className="flex flex-row gap-2 max-w-3xl w-full mx-auto mt-auto"
       onSubmit={(e: FormEvent) => {
         e.preventDefault();
 
