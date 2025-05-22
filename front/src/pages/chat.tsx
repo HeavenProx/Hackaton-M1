@@ -152,7 +152,6 @@ export default function ChatPage() {
                 </Card>
               </div>
             )}
-
             {step === "ask_plate" && user?.cars?.length > 0 && (
               <div className="flex flex-col gap-2 items-start">
                 {user?.cars.map((car: any, index: number) => (
