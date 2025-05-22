@@ -57,7 +57,7 @@ class DeepInfraService
 
             {
                 "message": "texte à afficher au client",
-                "action": "code pour le frontend (ex : ask_plate, select_operations, etc.)",
+                "action": "code pour le frontend (ex : ask_plate, select_operations, select_schedule etc.)",
                 "options": ["option 1", "option 2", ...] // si applicable (sinon, omettre ce champ)
             }
 

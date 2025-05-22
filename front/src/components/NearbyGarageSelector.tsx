@@ -58,7 +58,7 @@ export default function NearbyGarageSelector({
   useEffect(() => {
     if (selectedDealership && scrollContainerRef.current) {
       const selectedIndex = dealerships.findIndex(
-        (d) => d.dealership_name === selectedDealership.dealership_name
+        (d) => d.dealership_name === selectedDealership.dealership_name,
       );
 
       if (selectedIndex !== -1 && cardRefs.current[selectedIndex].current) {

@@ -7,7 +7,7 @@ export type Step =
   | "ask_plate"
   | "select_operations"
   | "ask_location"
-  | "select_slot"
+  | "select_schedule"
   | "confirm_appointment";
 
 export type Message = {
