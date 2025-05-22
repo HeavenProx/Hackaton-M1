@@ -20,7 +20,9 @@ export default function ChatPage() {
     onSuccess: (data) => {
       const reply: Message = {
         role: "system",
-        content: data.message || "Je n’ai pas compris.",
+        content: data.message || "Je n'ai pas compris.",
+        action: data.action,
+        options: data.options,
       };
 
       setMessages((prev) => [...prev, reply]);
@@ -51,14 +53,30 @@ export default function ChatPage() {
     sendRequest(updatedMessages);
   };
 
+  const handleOptionSelect = (option: string) => {
+    // When an option is selected from buttons, treat it as a user message
+    const userMessage: Message = {
+      role: "user",
+      content: option,
+    };
+    
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    sendRequest(updatedMessages);
+  };
+
   return (
     <DefaultLayout>
       <div className="flex flex-col h-[87vh]">
-        <div className="flex justify-between items-center mb-4  max-w-3xl mx-auto">
+        <div className="flex justify-between items-center mb-4 max-w-3xl mx-auto">
           <h1 className="text-2xl font-bold">Assistant Garage Folie</h1>
         </div>
 
-        <Conversation isLoading={isLoading} messages={messages} />
+        <Conversation 
+          isLoading={isLoading} 
+          messages={messages} 
+          onOptionSelect={handleOptionSelect}
+        />
         <MessageForm isLoading={isLoading} onSubmit={onSubmit} />
       </div>
     </DefaultLayout>

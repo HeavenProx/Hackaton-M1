@@ -8,6 +8,7 @@ export type ModalDisclosureProps = {
 
 export type NearbyGarageSelectorProps = {
   disclosure: ModalDisclosureProps;
+  onDealershipConfirm: (dealership: Dealership) => void;
 };
 
 export type MapBoxContainerProps = {

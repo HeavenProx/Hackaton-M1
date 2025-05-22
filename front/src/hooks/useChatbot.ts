@@ -30,6 +30,11 @@ export const useChatbot = ({ onSuccess, onError }: Params) => {
   const sendRequest = async (messages: Message[]) => {
     setIsLoading(true);
 
+    const filteredMessages = messages.map((message) => ({
+      role: message.role,
+      content: message.content,
+    }));
+
     try {
       const response = await fetch("http://127.0.0.1:8000/chatbot/analyze", {
         method: "POST",
@@ -38,7 +43,7 @@ export const useChatbot = ({ onSuccess, onError }: Params) => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          messages,
+          messages: filteredMessages,
         }),
       });
 

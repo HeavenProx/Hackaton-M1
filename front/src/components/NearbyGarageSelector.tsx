@@ -19,6 +19,7 @@ import { dealerships } from "@/data/dealerships";
 
 export default function NearbyGarageSelector({
   disclosure,
+  onDealershipConfirm,
 }: NearbyGarageSelectorProps) {
   const { isOpen, onOpenChange } = disclosure;
   const [selectedDealership, setSelectedDealership] =
@@ -46,9 +47,10 @@ export default function NearbyGarageSelector({
   };
 
   const handleConfirm = () => {
-    // Here you would typically do something with the selected dealership
-    console.log("Selected dealership:", selectedDealership);
-    console.log("Selected location:", selectedLocation);
+    if (selectedDealership && onDealershipConfirm) {
+      // Call the callback with the selected dealership
+      onDealershipConfirm(selectedDealership);
+    }
     onOpenChange();
   };
 
@@ -56,7 +58,7 @@ export default function NearbyGarageSelector({
   useEffect(() => {
     if (selectedDealership && scrollContainerRef.current) {
       const selectedIndex = dealerships.findIndex(
-        (d) => d.dealership_name === selectedDealership.dealership_name,
+        (d) => d.dealership_name === selectedDealership.dealership_name
       );
 
       if (selectedIndex !== -1 && cardRefs.current[selectedIndex].current) {
