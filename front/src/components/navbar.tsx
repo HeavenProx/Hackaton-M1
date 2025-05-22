@@ -9,7 +9,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
 } from "@heroui/navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
@@ -18,6 +18,9 @@ import { useUser } from "@/contexts/UserContext";
 export const Navbar = () => {
   const { isAuthenticated, user, logout } = useUser();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isVehiclesPage = location.pathname === "/vehicles";
 
   const handleLogout = () => {
     logout();
@@ -46,19 +49,25 @@ export const Navbar = () => {
               Bonjour {user?.firstname} {user?.lastname}
             </NavbarItem>
             <NavbarItem>
-              <Button as={Link} href="/vehicles" variant="flat">
-                Mes véhicules
+              <ThemeSwitch />
+            </NavbarItem>
+            <NavbarItem>
+              <Button
+                as={Link}
+                color="primary"
+                href={isVehiclesPage ? "/chat" : "/vehicles"}
+                variant="shadow"
+              >
+                {isVehiclesPage ? "Le chat" : "Mes véhicules"}
               </Button>
             </NavbarItem>
             <NavbarItem>
-              <Button variant="light" onClick={handleLogout}>
+              <Button color="danger" variant="shadow" onPress={handleLogout}>
                 Déconnexion
               </Button>
             </NavbarItem>
           </>
         )}
-
-        <ThemeSwitch />
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -75,8 +84,8 @@ export const Navbar = () => {
                 </span>
               </NavbarMenuItem>
               <NavbarMenuItem>
-                <Link href="/vehicles" size="lg">
-                  Mes véhicules
+                <Link href={isVehiclesPage ? "/chat" : "/vehicles"} size="lg">
+                  {isVehiclesPage ? "Chat" : "Mes véhicules"}
                 </Link>
               </NavbarMenuItem>
               <NavbarMenuItem>
