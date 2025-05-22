@@ -49,13 +49,10 @@ export const Navbar = () => {
               Bonjour {user?.firstname} {user?.lastname}
             </NavbarItem>
             <NavbarItem>
-              <ThemeSwitch />
-            </NavbarItem>
-            <NavbarItem>
               <Button
                 as={Link}
                 color="primary"
-                href={isVehiclesPage ? "/chat" : "/vehicles"}
+                href={isVehiclesPage ? "/" : "/vehicles"}
                 variant="shadow"
               >
                 {isVehiclesPage ? "Le chat" : "Mes véhicules"}
@@ -68,6 +65,10 @@ export const Navbar = () => {
             </NavbarItem>
           </>
         )}
+
+        <NavbarItem>
+          <ThemeSwitch />
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">

@@ -94,7 +94,7 @@ export default function ChatPage() {
       role: "user",
       content: option,
     };
-    
+
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     sendRequest(updatedMessages);
@@ -102,7 +102,7 @@ export default function ChatPage() {
 
   return (
     <DefaultLayout>
-      <div className="flex flex-col h-[87vh]">
+      <div className="flex flex-col h-full">
         <div className="flex justify-between items-center mb-4 max-w-3xl mx-auto">
           <h1 className="text-2xl font-bold">Assistant Garage Folie</h1>
         </div>
@@ -117,16 +117,14 @@ export default function ChatPage() {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
               >
                 <Card
-                  className={`max-w-[80%] shadow-sm ${
-                    message.role === "user"
-                      ? "bg-primary text-white"
-                      : "bg-default-50"
-                  }`}
+                  className={`max-w-[80%] shadow-sm ${message.role === "user"
+                    ? "bg-primary text-white"
+                    : "bg-default-50"
+                    }`}
                 >
                   <CardBody className="py-2 px-3">
                     <p className="whitespace-pre-wrap">{message.content}</p>
