@@ -46,17 +46,19 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
     if (onOptionSelect) {
       // Send the dealership name back to the conversation
       onOptionSelect(
-        `J'ai choisi le garage n° ${dealership.id} : ${dealership.dealership_name}`,
+        `J'ai choisi le garage : ${dealership.dealership_name}`,
       );
+      localStorage.setItem("garage", dealership.id.toString());
     }
   };
 
   const handleSlotConfirm = async (slotInfo: {
-      day: string;
-      slot: string;
-      formattedDate: string;
+    day: string;
+    slot: string;
+    formattedDate: string;
   }) => {
-      if (onOptionSelect) {
+    if (onOptionSelect) {
+          localStorage.setItem("date", slotInfo.formattedDate);
           // Send the selected slot back to the conversation
           if (slotInfo.day !== "Aucun créneau") {
               onOptionSelect(
@@ -140,7 +142,7 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                               handleOptionClick(
                                 `J'ai sélectionné : ${selectedOptions.join(", ")}`
                               );
-                              setSelectedOptions([]); // Reset après validation
+                              localStorage.setItem("selectedOptions", selectedOptions.toString());
                             }}
                           >
                             Valider ma sélection
@@ -162,7 +164,12 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                       color="primary"
                       size="sm"
                       variant="flat"
-                      onPress={() => handlePlateSelect(car.registration, car.brand, car.model)}
+                      onPress={() => {
+                        handlePlateSelect(car.registration, car.brand, car.model);
+                        localStorage.setItem("car", (car['@id'].split("/")[2]));
+                      }
+
+                      }
                     >
                       🚗 {car.brand} {car.model} — {car.registration}
                     </Button>
