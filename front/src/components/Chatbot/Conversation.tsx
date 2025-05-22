@@ -42,7 +42,9 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
   const handleDealershipConfirm = (dealership: Dealership) => {
     if (onOptionSelect) {
       // Send the dealership name back to the conversation
-      onOptionSelect(`J'ai choisi le garage: ${dealership.dealership_name}`);
+      onOptionSelect(
+        `J'ai choisi le garage n° ${dealership.id} : ${dealership.dealership_name}`,
+      );
     }
   };
 
@@ -54,7 +56,7 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
     if (onOptionSelect) {
       // Send the selected slot back to the conversation
       onOptionSelect(
-        `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`
+        `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`,
       );
     }
   };
