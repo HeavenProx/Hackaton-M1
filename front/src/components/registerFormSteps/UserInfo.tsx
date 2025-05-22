@@ -281,7 +281,6 @@ export default function UserInfo({ onNext, defaultValues }) {
         <Spacer y={1} />
 
         <Button fullWidth color="primary" type="submit">
-          {" "}
           Créer le compte
         </Button>
 

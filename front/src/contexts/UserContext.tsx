@@ -72,7 +72,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     isDriver?: boolean,
     driverFirstname?: string,
     driverLastname?: string,
-    driverPhoneNumber?: string,
+    driverPhoneNumber?: string
   ): Promise<void> => {
     try {
       const res = await fetch("http://127.0.0.1:8000/users", {
@@ -98,7 +98,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
         if (errorData.violations && Array.isArray(errorData.violations)) {
           const violation = errorData.violations.find(
-            (v) => v.propertyPath === "email",
+            (v) => v.propertyPath === "email"
           );
 
           if (violation) {
@@ -154,7 +154,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
       const data = await userRes.json();
       const updatedUser = data["member"].find(
-        (u: any) => u.email === user.email,
+        (u: any) => u.email === user.email
       );
 
       if (!updatedUser) return;
