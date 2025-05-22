@@ -40,7 +40,7 @@ export default function LoginForm() {
         color: "primary",
       });
 
-      navigate("/chat");
+      navigate("/");
     } catch (err) {
       setLoginError("Email ou mot de passe incorrect");
     } finally {

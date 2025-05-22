@@ -60,7 +60,7 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
       });
 
       await updateUser();
-      navigate(isStandalone ? "/vehicles" : "/");
+      navigate(isStandalone ? "/vehicles" : "/login");
     } catch (err) {
       console.error("Erreur à l'enregistrement du véhicule :", err);
     } finally {
@@ -70,7 +70,7 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
 
   const skipStep = () => {
     setIsLoading(true);
-    navigate(isStandalone ? "/vehicles" : "/");
+    navigate(isStandalone ? "/vehicles" : "/login");
     setIsLoading(false);
   };
 
@@ -154,14 +154,14 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
               onChange={handleBrandChange}
             />
             {filteredBrands.length > 0 && (
-              <ul className="absolute z-30 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto text-sm">
+              <ul className="absolute z-30 w-full mt-1 bg-white dark:bg-default-100 border border-gray-300 dark:border-default-300 rounded-md shadow-md max-h-60 overflow-y-auto text-sm">
                 {filteredBrands.map((brand, i) => (
                   <li
                     key={i}
-                    className="cursor-pointer hover:bg-blue-100"
+                    className="cursor-pointer hover:bg-blue-100 dark:hover:bg-default-200"
                   >
                     <button
-                      className="w-full px-3 py-2 text-start"
+                      className="w-full px-3 py-2 text-start text-black dark:text-white"
                       onClick={() => {
                         setBrandInput(brand);
                         setValue("carBrand", brand);
@@ -187,14 +187,14 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
                 onChange={handleModelChange}
               />
               {filteredModels.length > 0 && (
-                <ul className="absolute z-30 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto text-sm">
+                <ul className="absolute z-30 w-full mt-1 bg-white dark:bg-default-100 border border-gray-300 dark:border-default-300 rounded-md shadow-md max-h-60 overflow-y-auto text-sm">
                   {filteredModels.map((model, i) => (
                     <li
                       key={i}
-                      className="cursor-pointer hover:bg-blue-100"
+                      className="cursor-pointer hover:bg-blue-100 dark:hover:bg-default-200"
                     >
                       <button
-                        className="w-full px-3 py-2 text-start"
+                        className="w-full px-3 py-2 text-start text-black dark:text-white"
                         onClick={() => {
                           setModelInput(model);
                           setValue("carModel", model);

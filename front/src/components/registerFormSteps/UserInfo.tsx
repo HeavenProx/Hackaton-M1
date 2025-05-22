@@ -287,7 +287,7 @@ export default function UserInfo({ onNext, defaultValues }) {
 
         <p className="text-sm text-center text-gray-600">
           Vous avez déja un compte ?<br />
-          <Link className="text-primary hover:underline" to="/">
+          <Link className="text-primary hover:underline" to="/login">
             Se connecter
           </Link>
         </p>
