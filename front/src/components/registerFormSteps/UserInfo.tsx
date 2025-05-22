@@ -71,7 +71,19 @@ export default function UserInfo({ onNext, defaultValues }) {
     setIsLoading(true);
 
     try {
-      await registerUser(data.email, data.password, data.firstName, data.lastName, data.phone, data.title, data.companyName, data.isDriver, data.driverFirstname, data.driverLastname, data.driverPhone);
+      await registerUser(
+        data.email,
+        data.password,
+        data.firstName,
+        data.lastName,
+        data.phone,
+        data.title,
+        data.companyName,
+        data.isDriver,
+        data.driverFirstname,
+        data.driverLastname,
+        data.driverPhone,
+      );
 
       addToast({
         title: "Inscription réussie",

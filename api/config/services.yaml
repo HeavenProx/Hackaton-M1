@@ -30,3 +30,6 @@ services:
 
   App\Controller\SendEmailController:
     tags: ["controller.service_arguments"]
+
+  App\Controller\CreateInterventionsController:
+    tags: ['controller.service_arguments']

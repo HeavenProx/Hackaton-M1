@@ -156,10 +156,7 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
             {filteredBrands.length > 0 && (
               <ul className="absolute z-30 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto text-sm">
                 {filteredBrands.map((brand, i) => (
-                  <li
-                    key={i}
-                    className="cursor-pointer hover:bg-blue-100"
-                  >
+                  <li key={i} className="cursor-pointer hover:bg-blue-100">
                     <button
                       className="w-full px-3 py-2 text-start"
                       onClick={() => {
@@ -189,10 +186,7 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
               {filteredModels.length > 0 && (
                 <ul className="absolute z-30 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto text-sm">
                   {filteredModels.map((model, i) => (
-                    <li
-                      key={i}
-                      className="cursor-pointer hover:bg-blue-100"
-                    >
+                    <li key={i} className="cursor-pointer hover:bg-blue-100">
                       <button
                         className="w-full px-3 py-2 text-start"
                         onClick={() => {

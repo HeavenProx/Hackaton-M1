@@ -20,12 +20,7 @@ function App() {
         }
         path="/"
       />
-      <Route
-        element={
-          <RegisterForm />
-        }
-        path="/register"
-      />
+      <Route element={<RegisterForm />} path="/register" />
 
       {/* Private only */}
       <Route

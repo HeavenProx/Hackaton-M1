@@ -9,6 +9,11 @@ logout:
   path: /logout
 
 api_send_mail:
-  path: /api/send-mail
+  path: /api/send-mail-pdf
   controller: App\Controller\SendEmailController
   methods: [POST]
+
+api_interventions:
+  path: /api/interventions
+  controller: App\Controller\CreateInterventionsController
+  methods: [ POST ]

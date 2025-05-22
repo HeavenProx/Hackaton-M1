@@ -13,12 +13,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: InterventionRepository::class)]
 #[ApiResource(
     operations: [
+        new Get(),
         new Get(
             uriTemplate: '/interventions/{id}/pdf',
             normalizationContext: ['groups' => ['interventions_pdf::read']],
             validationContext: ['groups' => ['interventions_pdf::read']],
             name: 'interventions_pdf',
-        )
+        ),
     ]
 )]
 class Intervention
@@ -33,22 +34,22 @@ class Intervention
     #[ORM\JoinColumn(nullable: false)]
     private ?Car $car = null;
 
-    #[Groups(['interventions_pdf::read'])]
+    #[Groups(['interventions_pdf::read','interventions_list::read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $diagnostic = null;
 
-    #[Groups(['interventions_pdf::read'])]
+    #[Groups(['interventions_pdf::read','interventions_list::read'])]
     #[ORM\ManyToOne(inversedBy: 'interventions')]
     private ?Dealership $garage = null;
 
-    #[Groups(['interventions_pdf::read'])]
+    #[Groups(['interventions_pdf::read','interventions_list::read'])]
     #[ORM\Column]
     private ?\DateTime $date = null;
 
     /**
      * @var Collection<int, Operation>
      */
-    #[Groups(['interventions_pdf::read'])]
+    #[Groups(['interventions_pdf::read','interventions_list::read'])]
     #[ORM\ManyToMany(targetEntity: Operation::class, inversedBy: 'interventions')]
     private Collection $operations;
 
