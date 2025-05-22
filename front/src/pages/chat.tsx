@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useUser } from "@/contexts/UserContext";
 import {
   Input,
   Button,
@@ -31,20 +32,31 @@ export default function ChatPage() {
       content: "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
     },
   ]);
+  const { user, token } = useUser();
+  console.log(user);
   const [step, setStep] = useState<Step>("welcome");
   const [input, setInput] = useState("");
+  const [plate, setPlate] = useState("");
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  type ChatbotResponse = {
+    message: string;
+    action?: Step;
+    options?: any[];
+  };
+
   const { sendRequest, isLoading } = useChatbot({
-    onSuccess: (data) => {
+    onSuccess: (data: unknown) => {
+      const response = data as ChatbotResponse;
+
       setInput("");
       setTimeout(() => inputRef.current?.focus(), 0);
 
-      console.log("data : ", data);
+      console.log("data : ", response);
 
-      const botMessage = data.message || "Je n’ai pas compris.";
+      const botMessage = response.message || "Je n’ai pas compris.";
 
       const botReply: Message = {
         role: "system",
@@ -52,6 +64,10 @@ export default function ChatPage() {
       };
 
       setMessages((prev) => [...prev, botReply]);
+
+      if (response.action) {
+        setStep(response.action);
+      }
     },
     onError: () => {
       setMessages((prev) => [
@@ -131,6 +147,8 @@ export default function ChatPage() {
                 </Card>
               </div>
             ))}
+
+            {/* Animation de chargement */}
             {isLoading && (
               <div className="flex justify-start">
                 <Card
@@ -147,10 +165,37 @@ export default function ChatPage() {
                 </Card>
               </div>
             )}
+
+            {step === "ask_plate" && user?.cars?.length > 0 && (
+              <div className="flex flex-col gap-2 items-start">
+                {user?.cars.map((car: any, index: number) => (
+                  <Button
+                    key={index}
+                    className="text-left w-full"
+                    variant="flat"
+                    onClick={() => {
+                      const selectedPlate = car.registration;
+                      setPlate(selectedPlate);
+
+                      const userMessage: Message = {
+                        role: "user",
+                        content: `Je choisis le véhicule : ${car.brand} ${car.model} (${car.registration})`,
+                      };
+
+                      const updatedMessages = [...messages, userMessage];
+                      setMessages(updatedMessages);
+                      sendRequest(updatedMessages);
+                    }}
+                  >
+                    🚗 {car.brand} {car.model} — {car.registration}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
         </ScrollShadow>
 
-        {/* Input area with Form */}
+        {/* Input principal en bas */}
         <Form
           className="flex flex-row gap-2 max-w-3xl w-full mx-auto"
           onSubmit={onSubmit}
