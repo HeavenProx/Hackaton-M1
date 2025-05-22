@@ -82,7 +82,9 @@ const MyPDF = ({ data }: { data: any }) => {
   return (
     <Document>
       <Page style={styles.page}>
-        <Text style={styles.header}>FICHE CLIENT & VEHICULE</Text>
+          <Text style={styles.header}>
+              FICHE CLIENT & VEHICULE - {new Date(data.date).toISOString().replace("T", " ").split(".")[0]}
+          </Text>
 
         {/* Vehicle */}
         <Text style={styles.sectionTitle}>Informations Véhicule</Text>
@@ -132,7 +134,7 @@ const MyPDF = ({ data }: { data: any }) => {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text>{new Date(data.date).toLocaleDateString()}</Text>
+          <Text>{new Date().toLocaleDateString()}</Text>
           <Text>Page 1 / 1</Text>
         </View>
       </Page>
@@ -148,7 +150,7 @@ export default function PDFButton({ interventionId }: PDFButtonProps) {
   const [data, setData] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4NDUzODcsImV4cCI6MTc0Nzg0ODk4Nywicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiamVhbi5kdXBvbnRAZXhhbXBsZS5jb20ifQ.vgzvIsgxvdVj8LJNvDSbLVWmxMJ5J8Ia9RZAtNQd1XDSRSOCqevq3c9OU_1p6wFeD0RXbK84zdVHrm5DwfT0inCYJ4Cj4_T3HgJAE-Am-xJkBj0SbhuSjxm8RVIzq02huZwVxjZA5pn_-3P-wJvwRfA-Sqt0z5Q1v22xUNLxTHHdkKaXYi30tIQXg6pbnihyLlg2EgrrzdFpNV5UhzjqF5XHbkfbLf4dAVKy16_wQb24Cin3oycrcZtsHRLTYSgq-IEDOGx_Uyl_a3VLkk2D23fHMgxg_mcUHmioekjOGeZr8kuM12GZNz_x2aFW67WVyX45ah92YFrOrLhJo8lKhNJ2TEX1UPdd9HE_siq9_WbbJTti779qrIq-qkyb17tfpdRg5tIY2Ehh8Ivcs3BmnfA1UyUQgRzsS_LnS5DVGah6pEWZBndIFJ_lYPivBX5G_1Gdi38sGIWrc2taCf-tHt4VOkACBphh2EZxBV31ovEqeNmqVpTL5tIwr3rbPhUqFdGOcv8SL8_Mdk_lbUhsmAGbhBjcAx_o6QmpowJQP-j9fOAOzLr0zjcVsBY0ECzehODbAZDYTmKJpvJXBKTQBiHb4SgzWbxZ5wqNnuL5gc_-g63zcB72qPIVW3Nvf2YjzkZ1f0_Mj2k7ASsdptnt8HrhC2nib7vfqXLk-7QjfAs";
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4NTIzODQsImV4cCI6MTc0Nzg1NTk4NCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiamVhbi5kdXBvbnRAZXhhbXBsZS5jb20ifQ.WKvs5xVN8xcywzQ6bLUiNm_f8rPMkrMw1ha3dTl2fInSYsFkdyl-5FrrtbpuM3xVuSTZiUZRtR2Oygg8a3eW_14wpo2_Kacys21WFGZM4ljzr4LbIZljyaKwpDaVIfLlhWTZ46op54eUVjaJ7pnj8_kBavR4iFZvnfP-WcgiENSgQf9764EGd9eo3m2LE8eqQ7QIgYkutXS119vAmhWxWbM24_gsbtTdt5Fw7j52cef6oWvPr5LmSF18kFK0_01lbUu8kEdFfTAKPKjZke7Q7pnDgL5X-HVBq2dtakr0vE9QkKfmA0vkj1wOWeBmGMKpPBfZYDp7PCpuey05xoyjcbmcZyjIb19JBekxZxJN0vtlfQNPYbmkZIj93zsn7YChAVg0FtVRlmwXlL6H8F7j3Zp28QXhEyNxT9_OlvlH-qO5MiPjnTNkdYEbff_VepZX-Sy-BO_dTPNpTOeMEB5mHlZ4p2_3VXwqVWA8Zi6v7MQf2xBkgMGJQOBVGgi6LTJ-UNplwZ5U5nXrl0LoEjNZXa17xnu3vTvKLY-DlSevIUwS4-rY-hm6eHnz2x18MMvqqvSl_TDynRgVVjVSCrcrRBOMHFLdRRxoVh1Jn1icp5JEqkLAyNNbuflTWclptK0gv_xy8ypG4XD_uTCo9CYMATboD1otf6vs1ouQ6ubF2RU";
 
     useEffect(() => {
 
