@@ -55,7 +55,7 @@ export const Navbar = () => {
                 href={isVehiclesPage ? "/" : "/vehicles"}
                 variant="shadow"
               >
-                {isVehiclesPage ? "Le chat" : "Mes véhicules"}
+                {isVehiclesPage ? "Chat Assistant" : "Mes véhicules"}
               </Button>
             </NavbarItem>
             <NavbarItem>
