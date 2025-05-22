@@ -6,7 +6,7 @@ import {
   Text,
   View,
   StyleSheet,
-    pdf
+  pdf,
 } from "@react-pdf/renderer";
 import { Button } from "@heroui/react";
 
@@ -82,9 +82,10 @@ const MyPDF = ({ data }: { data: any }) => {
   return (
     <Document>
       <Page style={styles.page}>
-          <Text style={styles.header}>
-              FICHE CLIENT & VEHICULE - {new Date(data.date).toISOString().replace("T", " ").split(".")[0]}
-          </Text>
+        <Text style={styles.header}>
+          FICHE CLIENT & VEHICULE -{" "}
+          {new Date(data.date).toISOString().replace("T", " ").split(".")[0]}
+        </Text>
 
         {/* Vehicle */}
         <Text style={styles.sectionTitle}>Informations Véhicule</Text>
@@ -150,10 +151,9 @@ export default function PDFButton({ interventionId }: PDFButtonProps) {
   const [data, setData] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4NTIzODQsImV4cCI6MTc0Nzg1NTk4NCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiamVhbi5kdXBvbnRAZXhhbXBsZS5jb20ifQ.WKvs5xVN8xcywzQ6bLUiNm_f8rPMkrMw1ha3dTl2fInSYsFkdyl-5FrrtbpuM3xVuSTZiUZRtR2Oygg8a3eW_14wpo2_Kacys21WFGZM4ljzr4LbIZljyaKwpDaVIfLlhWTZ46op54eUVjaJ7pnj8_kBavR4iFZvnfP-WcgiENSgQf9764EGd9eo3m2LE8eqQ7QIgYkutXS119vAmhWxWbM24_gsbtTdt5Fw7j52cef6oWvPr5LmSF18kFK0_01lbUu8kEdFfTAKPKjZke7Q7pnDgL5X-HVBq2dtakr0vE9QkKfmA0vkj1wOWeBmGMKpPBfZYDp7PCpuey05xoyjcbmcZyjIb19JBekxZxJN0vtlfQNPYbmkZIj93zsn7YChAVg0FtVRlmwXlL6H8F7j3Zp28QXhEyNxT9_OlvlH-qO5MiPjnTNkdYEbff_VepZX-Sy-BO_dTPNpTOeMEB5mHlZ4p2_3VXwqVWA8Zi6v7MQf2xBkgMGJQOBVGgi6LTJ-UNplwZ5U5nXrl0LoEjNZXa17xnu3vTvKLY-DlSevIUwS4-rY-hm6eHnz2x18MMvqqvSl_TDynRgVVjVSCrcrRBOMHFLdRRxoVh1Jn1icp5JEqkLAyNNbuflTWclptK0gv_xy8ypG4XD_uTCo9CYMATboD1otf6vs1ouQ6ubF2RU";
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDc4NTIzODQsImV4cCI6MTc0Nzg1NTk4NCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiamVhbi5kdXBvbnRAZXhhbXBsZS5jb20ifQ.WKvs5xVN8xcywzQ6bLUiNm_f8rPMkrMw1ha3dTl2fInSYsFkdyl-5FrrtbpuM3xVuSTZiUZRtR2Oygg8a3eW_14wpo2_Kacys21WFGZM4ljzr4LbIZljyaKwpDaVIfLlhWTZ46op54eUVjaJ7pnj8_kBavR4iFZvnfP-WcgiENSgQf9764EGd9eo3m2LE8eqQ7QIgYkutXS119vAmhWxWbM24_gsbtTdt5Fw7j52cef6oWvPr5LmSF18kFK0_01lbUu8kEdFfTAKPKjZke7Q7pnDgL5X-HVBq2dtakr0vE9QkKfmA0vkj1wOWeBmGMKpPBfZYDp7PCpuey05xoyjcbmcZyjIb19JBekxZxJN0vtlfQNPYbmkZIj93zsn7YChAVg0FtVRlmwXlL6H8F7j3Zp28QXhEyNxT9_OlvlH-qO5MiPjnTNkdYEbff_VepZX-Sy-BO_dTPNpTOeMEB5mHlZ4p2_3VXwqVWA8Zi6v7MQf2xBkgMGJQOBVGgi6LTJ-UNplwZ5U5nXrl0LoEjNZXa17xnu3vTvKLY-DlSevIUwS4-rY-hm6eHnz2x18MMvqqvSl_TDynRgVVjVSCrcrRBOMHFLdRRxoVh1Jn1icp5JEqkLAyNNbuflTWclptK0gv_xy8ypG4XD_uTCo9CYMATboD1otf6vs1ouQ6ubF2RU";
 
-    useEffect(() => {
-
+  useEffect(() => {
     // Fetch data from the API with the token
     fetch(`http://localhost:8000/interventions/${interventionId}/pdf`, {
       headers: {
@@ -164,45 +164,51 @@ export default function PDFButton({ interventionId }: PDFButtonProps) {
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
+
         return response.json();
       })
       .then((data) => setData(data))
       .catch((error) => console.error("Error fetching data:", error));
   }, [interventionId]);
 
-    const handleDownloadClick = async () => {
-        setIsGenerating(true);
+  const handleDownloadClick = async () => {
+    setIsGenerating(true);
 
-        try {
-            // Génération du blob PDF à partir de ton composant PDF
-            const blob = await pdf(<MyPDF data={data} />).toBlob();
+    try {
+      // Génération du blob PDF à partir de ton composant PDF
+      const blob = await pdf(<MyPDF data={data} />).toBlob();
 
-            const formData = new FormData();
-            formData.append("file", new File([blob], "compte_rendu_chatbot.pdf", { type: "application/pdf" }));
-            formData.append("emailClient", data["car"]["user"]["email"]);
+      const formData = new FormData();
 
-            const response = await fetch("http://localhost:8000/api/send-mail-pdf", {
-                headers: {
-                    Authorization: `Bearer ${token}`, // Add the token in the header
-                },
-                method: "POST",
-                body: formData,
-            });
+      formData.append(
+        "file",
+        new File([blob], "compte_rendu_chatbot.pdf", {
+          type: "application/pdf",
+        }),
+      );
+      formData.append("emailClient", data["car"]["user"]["email"]);
 
-            if (!response.ok) {
-                throw new Error("Échec de l'envoi du PDF");
-            }
+      const response = await fetch("http://localhost:8000/api/send-mail-pdf", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add the token in the header
+        },
+        method: "POST",
+        body: formData,
+      });
 
-            console.log("PDF envoyé avec succès");
-        } catch (error) {
-            console.error("Erreur lors de l'envoi du PDF :", error);
-        } finally {
-            setIsGenerating(false);
-        }
-    };
+      if (!response.ok) {
+        throw new Error("Échec de l'envoi du PDF");
+      }
 
+      console.log("PDF envoyé avec succès");
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du PDF :", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
-    if (!data) {
+  if (!data) {
     return <p>Loading...</p>;
   }
 

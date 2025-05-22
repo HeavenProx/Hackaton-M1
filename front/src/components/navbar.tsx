@@ -9,11 +9,11 @@ import {
   NavbarMenu,
   NavbarMenuItem,
 } from "@heroui/navbar";
+import { useNavigate } from "react-router-dom";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 import { useUser } from "@/contexts/UserContext";
-import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const { isAuthenticated, user, logout } = useUser();
@@ -51,7 +51,7 @@ export const Navbar = () => {
               </Button>
             </NavbarItem>
             <NavbarItem>
-              <Button onClick={handleLogout} variant="light">
+              <Button variant="light" onClick={handleLogout}>
                 Déconnexion
               </Button>
             </NavbarItem>
@@ -80,7 +80,10 @@ export const Navbar = () => {
                 </Link>
               </NavbarMenuItem>
               <NavbarMenuItem>
-                <button onClick={handleLogout} className="text-left text-lg text-primary hover:underline">
+                <button
+                  className="text-left text-lg text-primary hover:underline"
+                  onClick={handleLogout}
+                >
                   Déconnexion
                 </button>
               </NavbarMenuItem>

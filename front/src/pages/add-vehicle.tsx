@@ -8,7 +8,7 @@ export default function AddVehiclePage() {
     <DefaultLayout>
       <div className="p-4 max-w-3xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Ajouter un véhicule</h1>
-        <CarInfo formData={formData} isStandalone />
+        <CarInfo isStandalone formData={formData} />
       </div>
     </DefaultLayout>
   );

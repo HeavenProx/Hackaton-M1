@@ -78,12 +78,12 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
 
   useEffect(() => {
     fetch(
-      "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/all-vehicles-model/records?limit=100"
+      "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/all-vehicles-model/records?limit=100",
     )
       .then((res) => res.json())
       .then((data) => {
         const brandList = Array.from(
-          new Set(data.results.map((item: any) => item.make).filter(Boolean))
+          new Set(data.results.map((item: any) => item.make).filter(Boolean)),
         ).sort();
 
         setBrands(brandList);
@@ -99,12 +99,12 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
     }
 
     fetch(
-      `https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/all-vehicles-model/records?where=make%3D%22${encodeURIComponent(brandInput)}%22&limit=100`
+      `https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/all-vehicles-model/records?where=make%3D%22${encodeURIComponent(brandInput)}%22&limit=100`,
     )
       .then((res) => res.json())
       .then((data) => {
         const modelList = Array.from(
-          new Set(data.results.map((item: any) => item.model).filter(Boolean))
+          new Set(data.results.map((item: any) => item.model).filter(Boolean)),
         ).sort();
 
         setModels(modelList);
@@ -120,7 +120,7 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
     setFilteredBrands(
       value.trim() === ""
         ? brands
-        : brands.filter((b) => b.toLowerCase().includes(value.toLowerCase()))
+        : brands.filter((b) => b.toLowerCase().includes(value.toLowerCase())),
     );
   };
 
@@ -132,7 +132,7 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
     setFilteredModels(
       value.trim() === ""
         ? models
-        : models.filter((m) => m.toLowerCase().includes(value.toLowerCase()))
+        : models.filter((m) => m.toLowerCase().includes(value.toLowerCase())),
     );
   };
 
