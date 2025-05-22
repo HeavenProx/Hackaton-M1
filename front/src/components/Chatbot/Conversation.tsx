@@ -59,10 +59,9 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
     }
   };
 
-  const handlePlateSelect = (plate: string) => {
+  const handlePlateSelect = (plate: string, brand: string, model: string) => {
     if (onOptionSelect) {
-      // Send the selected plate back to the conversation
-      onOptionSelect(`J'ai choisi la plaque: ${plate}`);
+      onOptionSelect(`J'ai choisi le véhicule : ${model} de chez ${brand} (${plate})`);
     }
   };
 
@@ -107,16 +106,19 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                 {message.action === "ask_plate" &&
                   user?.cars?.length &&
                   user?.cars?.length > 0 && (
-                    <div className="flex flex-col gap-2 items-start">
+                    <div className="flex flex-wrap gap-2 mt-2 max-w-[80%]">
                       {user?.cars.map((car: any, index: number) => (
-                        <Button
-                          key={index}
-                          className="text-left w-full"
-                          variant="flat"
-                          onPress={() => handlePlateSelect(car.registration)}
-                        >
-                          🚗 {car.brand} {car.model} — {car.registration}
-                        </Button>
+                    
+                    <Button
+                      key={index}
+                      color="primary"
+                      size="sm"
+                      variant="flat"
+                      onPress={() => handlePlateSelect(car.registration, car.brand, car.model)}
+                    >
+                      🚗 {car.brand} {car.model} — {car.registration}
+                    </Button>
+                  
                       ))}
                     </div>
                   )}
