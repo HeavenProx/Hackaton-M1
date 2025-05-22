@@ -1,23 +1,32 @@
 "use client";
 
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/modal";
 import { Button } from "@heroui/react";
 import { format, startOfWeek, addDays } from "date-fns";
-import fr from "date-fns/locale/fr";
+import { fr } from "date-fns/locale/fr";
 
-export default function PlanningModal() {
-  const [isOpen, setIsOpen] = useState(false);
+import { GarageSlotSelectorProps } from "@/types/components";
+
+export default function GarageSlotSelector({
+  disclosure,
+  onSlotConfirm,
+}: GarageSlotSelectorProps) {
+  const { isOpen, onOpenChange } = disclosure;
   const [selectedSlot, setSelectedSlot] = useState<{
     day: string;
     slot: string;
+    formattedDate: string;
   } | null>(null);
   const [disabledSlots, setDisabledSlots] = useState<
     { day: string; slot: string }[]
   >([]);
-
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
 
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
 
@@ -47,121 +56,120 @@ export default function PlanningModal() {
     setDisabledSlots(disabled);
   }, []);
 
+  // Reset selection when modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedSlot(null);
+    }
+  }, [isOpen]);
+
   const isDisabled = (day: string, slot: string) =>
     disabledSlots.some((s) => s.day === day && s.slot === slot);
 
   const handleSlotClick = (day: string, slot: string) => {
     if (isDisabled(day, slot)) return; // Prevent click if disabled
 
-    const [startTime] = slot.split(" - "); // Extract the start time
-    const selectedDate = new Date(`${day.split(" ")[1]}T${startTime}:00`); // Combine day and time
+    const dayParts = day.split(" ")[1].split("/");
+    const day_part = parseInt(dayParts[0]);
+    const month_part = parseInt(dayParts[1]) - 1; // JS months are 0-indexed
+    const year_part = new Date().getFullYear();
 
-    const formattedDate = format(selectedDate, "yyyy-MM-dd HH:mm:ss"); // Format the date
+    const time_part = slot.split(" - ")[0];
+    const hourMinute = time_part.split(":");
 
-    console.log("Selected DateTime:", formattedDate); // Log the formatted date
+    const selectedDate = new Date(
+      year_part,
+      month_part,
+      day_part,
+      parseInt(hourMinute[0]),
+      parseInt(hourMinute[1]),
+    );
 
-    setSelectedSlot({ day, slot });
+    const formattedDate = format(selectedDate, "yyyy-MM-dd'T'HH:mm:ss");
+
+    setSelectedSlot({ day, slot, formattedDate });
+  };
+
+  const handleConfirm = () => {
+    if (selectedSlot && onSlotConfirm) {
+      onSlotConfirm(selectedSlot);
+      onOpenChange();
+    }
   };
 
   return (
-    <>
-      <Button color="primary" onClick={openModal}>
-        Ouvrir le planning
-      </Button>
-
-      <Transition appear as={Fragment} show={isOpen}>
-        <Dialog as="div" className="relative z-50" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-40" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto flex items-center justify-center p-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-90"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-90"
-            >
-              <Dialog.Panel className="w-full max-w-4xl p-6 bg-white rounded-2xl shadow-xl">
-                <Dialog.Title className="text-xl font-bold mb-4">
-                  Choisissez votre créneau
-                </Dialog.Title>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-                  {days.map((day) => (
-                    <div key={day}>
-                      <h3 className="text-sm font-semibold mb-2 text-center">
-                        {day}
-                      </h3>
-                      <div className="flex flex-col gap-2">
-                        {slots.map((slot) => (
-                          <Button
-                            key={slot}
-                            className={
-                              isDisabled(day, slot)
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
-                            }
-                            color={
-                              isDisabled(day, slot)
-                                ? "default"
-                                : selectedSlot?.day === day &&
-                                    selectedSlot?.slot === slot
-                                  ? "primary"
-                                  : "default"
-                            }
-                            disabled={isDisabled(day, slot)}
-                            variant={
-                              selectedSlot?.day === day &&
-                              selectedSlot?.slot === slot
-                                ? "solid"
-                                : "light"
-                            }
-                            onClick={() => handleSlotClick(day, slot)}
-                          >
-                            {slot}
-                          </Button>
-                        ))}
-                      </div>
+    <Modal
+      backdrop="blur"
+      isOpen={isOpen}
+      scrollBehavior="inside"
+      size="4xl"
+      onOpenChange={onOpenChange}
+    >
+      <ModalContent>
+        {(onClose) => (
+          <>
+            <ModalHeader className="flex flex-col gap-1">
+              Choisissez votre créneau
+            </ModalHeader>
+            <ModalBody>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                {days.map((day) => (
+                  <div key={day}>
+                    <h3 className="text-sm font-semibold mb-2 text-center">
+                      {day}
+                    </h3>
+                    <div className="flex flex-col gap-2">
+                      {slots.map((slot) => (
+                        <Button
+                          key={slot}
+                          className={
+                            isDisabled(day, slot)
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }
+                          color={
+                            isDisabled(day, slot)
+                              ? "default"
+                              : selectedSlot?.day === day &&
+                                  selectedSlot?.slot === slot
+                                ? "primary"
+                                : "default"
+                          }
+                          disabled={isDisabled(day, slot)}
+                          variant={
+                            selectedSlot?.day === day &&
+                            selectedSlot?.slot === slot
+                              ? "solid"
+                              : "light"
+                          }
+                          onPress={() => handleSlotClick(day, slot)}
+                        >
+                          {slot}
+                        </Button>
+                      ))}
                     </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 flex justify-end gap-2">
-                  <Button variant="ghost" onClick={closeModal}>
-                    Annuler
-                  </Button>
-                  <Button
-                    color="secondary"
-                    variant="ghost"
-                    onClick={closeModal}
-                  >
-                    Aucun créneau ne me convient
-                  </Button>
-                  <Button
-                    color="primary"
-                    disabled={!selectedSlot}
-                    onClick={closeModal}
-                  >
-                    Confirmer
-                  </Button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
-    </>
+                  </div>
+                ))}
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={onClose}>
+                Annuler
+              </Button>
+              <Button color="secondary" variant="ghost" onPress={onClose}>
+                Aucun créneau ne me convient
+              </Button>
+              <Button
+                color="primary"
+                isDisabled={!selectedSlot}
+                onPress={handleConfirm}
+              >
+                Confirmer
+              </Button>
+            </ModalFooter>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
   );
 }

@@ -14,6 +14,11 @@ export type NearbyGarageSelectorProps = {
 export type MapBoxContainerProps = {
   selectedDealership?: Dealership | null;
   onDealershipSelect?: (dealership: Dealership) => void;
+  selectedLocation?: {
+    name: string;
+    longitude: number;
+    latitude: number;
+  } | null;
 };
 
 export type GarageInfoCardProps = {
@@ -21,4 +26,13 @@ export type GarageInfoCardProps = {
   onSelect?: (dealership: Dealership) => void;
   isSelected?: boolean;
   cardRef?: React.RefObject<HTMLDivElement>;
+};
+
+export type GarageSlotSelectorProps = {
+  disclosure: ModalDisclosureProps;
+  onSlotConfirm: (slotInfo: {
+    day: string;
+    slot: string;
+    formattedDate: string;
+  }) => void;
 };

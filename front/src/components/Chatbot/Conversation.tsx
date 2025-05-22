@@ -7,8 +7,10 @@ import {
 } from "@heroui/react";
 import { useEffect, useRef } from "react";
 
-import { Message } from "@/hooks/useChatbot";
 import NearbyGarageSelector from "../NearbyGarageSelector";
+import GarageSlotSelector from "../GarageSlotSelector";
+
+import { Message } from "@/hooks/useChatbot";
 import { Dealership } from "@/types/dealership";
 
 type Props = {
@@ -21,6 +23,7 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const garageSelectionDisclosure = useDisclosure();
+  const slotSelectionDisclosure = useDisclosure();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -41,7 +44,18 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
     }
   };
 
-  console.log("Messages:", messages);
+  const handleSlotConfirm = (slotInfo: {
+    day: string;
+    slot: string;
+    formattedDate: string;
+  }) => {
+    if (onOptionSelect) {
+      // Send the selected slot back to the conversation
+      onOptionSelect(
+        `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`,
+      );
+    }
+  };
 
   return (
     <ScrollShadow ref={scrollRef} className="h-full p-4" hideScrollBar={false}>
@@ -62,7 +76,6 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
             >
               <CardBody className="py-2 px-3">
                 <p className="whitespace-pre-wrap">{message.content}</p>
-                {/* Render option buttons only for system messages with action "select_operations" */}
                 {message.role === "system" &&
                   message.action === "select_operations" &&
                   message.options &&
@@ -95,6 +108,23 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                       <NearbyGarageSelector
                         disclosure={garageSelectionDisclosure}
                         onDealershipConfirm={handleDealershipConfirm}
+                      />
+                    </div>
+                  )}
+                {message.role === "system" &&
+                  message.action === "select_schedule" && (
+                    <div className="flex flex-wrap gap-2 mt-2 max-w-[80%]">
+                      <Button
+                        color="primary"
+                        size="sm"
+                        variant="flat"
+                        onPress={slotSelectionDisclosure.onOpen}
+                      >
+                        Choisir un créneau
+                      </Button>
+                      <GarageSlotSelector
+                        disclosure={slotSelectionDisclosure}
+                        onSlotConfirm={handleSlotConfirm}
                       />
                     </div>
                   )}
