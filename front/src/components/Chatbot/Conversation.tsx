@@ -14,6 +14,7 @@ import GarageSlotSelector from "../GarageSlotSelector";
 import { Message } from "@/hooks/useChatbot";
 import { Dealership } from "@/types/dealership";
 import { useUser } from "@/contexts/UserContext";
+import {Link} from "@heroui/link";
 
 type Props = {
   messages: Message[];
@@ -50,17 +51,34 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
     }
   };
 
-  const handleSlotConfirm = (slotInfo: {
-    day: string;
-    slot: string;
-    formattedDate: string;
+  const handleSlotConfirm = async (slotInfo: {
+      day: string;
+      slot: string;
+      formattedDate: string;
   }) => {
-    if (onOptionSelect) {
-      // Send the selected slot back to the conversation
-      onOptionSelect(
-        `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`,
-      );
-    }
+      if (onOptionSelect) {
+          // Send the selected slot back to the conversation
+          if (slotInfo.day !== "Aucun créneau") {
+              onOptionSelect(
+                  `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`
+              );
+          } else {
+              onOptionSelect(
+                  `Je souhaite être recontacté par mail.`
+              );
+              let token = localStorage.getItem("token");
+              const formData = new FormData();
+
+              formData.append("emailClient", user?.email);
+              const response = await fetch("http://localhost:8000/api/send-mail-rdv", {
+                  headers: {
+                      Authorization: `Bearer ${token}`, // Add the token in the header
+                  },
+                  method: "POST",
+                  body: formData,
+              });
+          }
+      }
   };
 
   const handlePlateSelect = (plate: string) => {
@@ -150,6 +168,20 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                       ))}
                     </div>
                   )}
+                  {message.action === "ask_plate" &&
+                      user?.cars?.length === 0 && (
+                          <div className="flex flex-col gap-2 items-start">
+                              <Button
+                                  as={Link}
+                                  key={index}
+                                  className="text-left w-full"
+                                  variant="flat"
+                                  href={"/add-vehicle"}
+                              >
+                                  Créer un nouveau véhicule
+                              </Button>
+                          </div>
+                      )}
 
                 {message.role === "system" &&
                   message.action === "ask_location" && (

@@ -97,6 +97,17 @@ export default function GarageSlotSelector({
     }
   };
 
+  const handleNoSlot = () => {
+    if (onSlotConfirm) {
+      onSlotConfirm({
+        day: "Aucun créneau",
+        slot: "Aucun créneau",
+        formattedDate: "",
+      });
+      onOpenChange();
+    }
+  }
+
   return (
     <Modal
       backdrop="blur"
@@ -156,7 +167,7 @@ export default function GarageSlotSelector({
               <Button color="danger" variant="light" onPress={onClose}>
                 Annuler
               </Button>
-              <Button color="secondary" variant="ghost" onPress={onClose}>
+              <Button color="secondary" variant="ghost" onPress={handleNoSlot}>
                 Aucun créneau ne me convient
               </Button>
               <Button
