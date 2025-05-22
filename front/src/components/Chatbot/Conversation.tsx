@@ -3,9 +3,10 @@ import {
   Card,
   CardBody,
   Button,
+  Checkbox,
   useDisclosure,
 } from "@heroui/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import NearbyGarageSelector from "../NearbyGarageSelector";
 import GarageSlotSelector from "../GarageSlotSelector";
@@ -22,6 +23,7 @@ type Props = {
 
 const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   const { user } = useUser();
   const garageSelectionDisclosure = useDisclosure();
@@ -87,22 +89,50 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                 <p className="whitespace-pre-wrap">{message.content}</p>
                 {message.role === "system" &&
                   message.action === "select_operations" &&
-                  message.options &&
-                  message.options.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2 max-w-[80%]">
-                      {message.options.map((option, optionIndex) => (
-                        <Button
-                          key={optionIndex}
-                          color="primary"
-                          size="sm"
-                          variant="flat"
-                          onPress={() => handleOptionClick(option)}
-                        >
-                          {option}
-                        </Button>
-                      ))}
+                  message.options?.length > 0 && (
+                    <div className="flex flex-col gap-3 mt-3">
+                      <div className="flex flex-wrap gap-2">
+                        {message.options.map((option, idx) => {
+                          const isSelected = selectedOptions.includes(option);
+
+                          return (
+                            <Button
+                              key={idx}
+                              variant={isSelected ? "solid" : "flat"}
+                              color={isSelected ? "primary" : "default"}
+                              onPress={() =>
+                                setSelectedOptions((prev) =>
+                                  isSelected
+                                    ? prev.filter((o) => o !== option)
+                                    : [...prev, option]
+                                )
+                              }
+                            >
+                              {isSelected ? "✅ " : ""}{option}
+                            </Button>
+                          );
+                        })}
+
+                        {selectedOptions.length > 0 && (
+                          <Button
+                            color="success"
+                            className="self-start text-white {
+                            
+                          }"
+                            onPress={() => {
+                              handleOptionClick(
+                                `J'ai sélectionné : ${selectedOptions.join(", ")}`
+                              );
+                              setSelectedOptions([]); // Reset après validation
+                            }}
+                          >
+                            Valider ma sélection
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  )}
+                  )
+                }
 
                 {message.action === "ask_plate" &&
                   user?.cars?.length &&
