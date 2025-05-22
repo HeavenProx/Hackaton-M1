@@ -65,16 +65,10 @@ class CreateInterventionsController
         $intervention->setGarage($this->dealershipRepository->findOneBy(['id' => $garageId]));
         $intervention->setDiagnostic($diagnostic);
         $intervention->setDate(new \DateTime($date));
-
-        foreach ($operations as $operationId) {
-            $operationId = (int) $operationId;
-            if (!is_int($operationId)) {
-                return new JsonResponse(['error' => 'Invalid operation ID'], Response::HTTP_BAD_REQUEST);
-            }
-
-            $operation = $this->operationRepository->findOneBy(['id' => $operationId]);
+        foreach ($operations as $operationName ) {
+            $operation = $this->operationRepository->findOneBy(['name' => $operationName]);
             if (!$operation) {
-                return new JsonResponse(['error' => "Operation with ID $operationId not found"], Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['error' => "Operation with ID $operationName not found"], Response::HTTP_BAD_REQUEST);
             }
 
             $intervention->addOperation($operation);

@@ -58,7 +58,8 @@ class DeepInfraService
             {
                 "message": "texte à afficher au client",
                 "action": "code pour le frontend (ex : ask_plate, select_operations, select_schedule etc.)",
-                "options": ["option 1", "option 2", ...] // si applicable (sinon, omettre ce champ)
+                "options": ["option 1", "option 2", ...] // si applicable (sinon, omettre ce champ),
+                "diagnostic": "résumé technique du problème avec les symptômes et les opérations proposées" // uniquement à la dernière étape pour résumer le problème pour le technicient
             }
 
             Utilise cette structure à chaque fois. Elle permet à l’interface de s’adapter dynamiquement.

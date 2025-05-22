@@ -51,6 +51,24 @@ export const useChatbot = ({ onSuccess, onError }: Params) => {
 
       onSuccess?.(data.response);
 
+      if (data["response"]["diagnostic"]){
+          localStorage.setItem("diagnostic", data["response"]["diagnostic"]);
+          await fetch("http://127.0.0.1:8000/api/interventions", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/ld+json",
+                  Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                  "car":localStorage.getItem("car"),
+                  "garage":localStorage.getItem("garage"),
+                  "operations":localStorage.getItem("selectedOptions")?.split(","),
+                  "diagnostic": localStorage.getItem("diagnostic"),
+                  "date": formatIsoToDatetime(localStorage.getItem("date")),
+              }),
+          });
+    }
+
       return data.response;
     } catch (error) {
       onError?.(error);
@@ -61,3 +79,23 @@ export const useChatbot = ({ onSuccess, onError }: Params) => {
 
   return { sendRequest, isLoading };
 };
+
+function formatIsoToDatetime(isoDate: string | null): string {
+    if (!isoDate) {
+        return "Invalid date";
+    }
+    const dateObj = new Date(isoDate);
+
+    const year = dateObj.getFullYear();
+    const month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+    const day = ("0" + dateObj.getDate()).slice(-2);
+    const hours = ("0" + dateObj.getHours()).slice(-2);
+    const minutes = ("0" + dateObj.getMinutes()).slice(-2);
+    const seconds = ("0" + dateObj.getSeconds()).slice(-2);
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+// Exemple d'utilisation
+const isoDate = "2025-05-22T09:00:00";
+console.log(formatIsoToDatetime(isoDate));
