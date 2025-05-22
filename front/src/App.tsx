@@ -2,9 +2,8 @@ import { Route, Routes } from "react-router-dom";
 
 import { PrivateOnlyRoute } from "@/components/routes/PrivateOnlyRoute";
 import { PublicOnlyRoute } from "@/components/routes/PublicOnlyRoute";
-
-import RegisterForm from "@/pages/auth/registerUser";
-import LoginForm from "@/pages/auth/loginUser";
+import RegisterForm from "@/pages/auth/register";
+import LoginForm from "@/pages/auth/login";
 import ChatPage from "@/pages/chat";
 import { VehiclesPage } from "@/pages/vehicles";
 import AddVehiclePage from "@/pages/add-vehicle";
@@ -14,46 +13,46 @@ function App() {
     <Routes>
       {/* Public only */}
       <Route
-        path="/"
         element={
           <PublicOnlyRoute>
             <LoginForm />
           </PublicOnlyRoute>
         }
+        path="/"
       />
       <Route
-        path="/register"
         element={
           <PublicOnlyRoute>
             <RegisterForm />
           </PublicOnlyRoute>
         }
+        path="/register"
       />
 
       {/* Private only */}
       <Route
-        path="/chat"
         element={
           <PrivateOnlyRoute>
             <ChatPage />
           </PrivateOnlyRoute>
         }
+        path="/chat"
       />
       <Route
-        path="/vehicles"
         element={
           <PrivateOnlyRoute>
             <VehiclesPage />
           </PrivateOnlyRoute>
         }
+        path="/vehicles"
       />
       <Route
-        path="/add-vehicle"
         element={
           <PrivateOnlyRoute>
             <AddVehiclePage />
           </PrivateOnlyRoute>
         }
+        path="/add-vehicle"
       />
     </Routes>
   );

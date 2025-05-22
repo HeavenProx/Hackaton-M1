@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Transition } from "@headlessui/react";
 
-import UserPart from "@/components/registerFormSteps/userPart";
-import CarPart from "@/components/registerFormSteps/carPart";
+import UserInfo from "@/components/registerFormSteps/UserInfo";
+import CarInfo from "@/components/registerFormSteps/CarInfo";
 import DefaultLayout from "@/layouts/default";
 
 export default function RegisterPage() {
@@ -41,7 +41,7 @@ export default function RegisterPage() {
           show={step === 1}
         >
           <div>
-            <UserPart defaultValues={formData} onNext={next} />
+            <UserInfo defaultValues={formData} onNext={next} />
           </div>
         </Transition>
 
@@ -55,7 +55,7 @@ export default function RegisterPage() {
           show={step === 2}
         >
           <div>
-            <CarPart formData={formData} onPrevious={previous} />
+            <CarInfo formData={formData} onPrevious={previous} />
           </div>
         </Transition>
       </div>

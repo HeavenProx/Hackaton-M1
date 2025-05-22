@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons/EyeIcons";
 import { useUser } from "@/contexts/UserContext";
 
-export default function UserPart({ onNext, defaultValues }) {
+export default function UserInfo({ onNext, defaultValues }) {
   const [isDriver, setIsDriver] = useState(defaultValues.isConducteur ?? true);
   const [isVisible, setIsVisible] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,19 +71,7 @@ export default function UserPart({ onNext, defaultValues }) {
     setIsLoading(true);
 
     try {
-      await registerUser(
-        data.email,
-        data.password,
-        data.firstName,
-        data.lastName,
-        data.phone,
-        data.title,
-        data.companyName,
-        data.isDriver,
-        data.driverFirstname,
-        data.driverLastname,
-        data.driverPhone,
-      );
+      await registerUser(data.email, data.password, data.firstName);
 
       addToast({
         title: "Inscription réussie",

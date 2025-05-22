@@ -8,12 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
 
 type Props = {
-  onPrevious: () => void;
+  onPrevious?: () => void;
   formData: any;
   isStandalone?: boolean;
 };
 
-export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
+export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
   const [brands, setBrands] = useState<string[]>([]);
   const [filteredBrands, setFilteredBrands] = useState<string[]>([]);
   const [brandInput, setBrandInput] = useState("");
@@ -78,12 +78,12 @@ export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
 
   useEffect(() => {
     fetch(
-      "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/all-vehicles-model/records?limit=100",
+      "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/all-vehicles-model/records?limit=100"
     )
       .then((res) => res.json())
       .then((data) => {
         const brandList = Array.from(
-          new Set(data.results.map((item: any) => item.make).filter(Boolean)),
+          new Set(data.results.map((item: any) => item.make).filter(Boolean))
         ).sort();
 
         setBrands(brandList);
@@ -99,12 +99,12 @@ export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
     }
 
     fetch(
-      `https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/all-vehicles-model/records?where=make%3D%22${encodeURIComponent(brandInput)}%22&limit=100`,
+      `https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/all-vehicles-model/records?where=make%3D%22${encodeURIComponent(brandInput)}%22&limit=100`
     )
       .then((res) => res.json())
       .then((data) => {
         const modelList = Array.from(
-          new Set(data.results.map((item: any) => item.model).filter(Boolean)),
+          new Set(data.results.map((item: any) => item.model).filter(Boolean))
         ).sort();
 
         setModels(modelList);
@@ -120,7 +120,7 @@ export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
     setFilteredBrands(
       value.trim() === ""
         ? brands
-        : brands.filter((b) => b.toLowerCase().includes(value.toLowerCase())),
+        : brands.filter((b) => b.toLowerCase().includes(value.toLowerCase()))
     );
   };
 
@@ -132,7 +132,7 @@ export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
     setFilteredModels(
       value.trim() === ""
         ? models
-        : models.filter((m) => m.toLowerCase().includes(value.toLowerCase())),
+        : models.filter((m) => m.toLowerCase().includes(value.toLowerCase()))
     );
   };
 
@@ -159,15 +159,18 @@ export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
                   <li
                     key={i}
                     className="px-3 py-2 cursor-pointer hover:bg-blue-100"
-                    onClick={() => {
-                      setBrandInput(brand);
-                      setValue("carBrand", brand);
-                      setFilteredBrands([]);
-                      setModelInput("");
-                      setModels([]);
-                    }}
                   >
-                    {brand}
+                    <button
+                      onClick={() => {
+                        setBrandInput(brand);
+                        setValue("carBrand", brand);
+                        setFilteredBrands([]);
+                        setModelInput("");
+                        setModels([]);
+                      }}
+                    >
+                      {brand}
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -188,13 +191,16 @@ export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
                     <li
                       key={i}
                       className="px-3 py-2 cursor-pointer hover:bg-blue-100"
-                      onClick={() => {
-                        setModelInput(model);
-                        setValue("carModel", model);
-                        setFilteredModels([]);
-                      }}
                     >
-                      {model}
+                      <button
+                        onClick={() => {
+                          setModelInput(model);
+                          setValue("carModel", model);
+                          setFilteredModels([]);
+                        }}
+                      >
+                        {model}
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -207,10 +213,10 @@ export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
           <Input
             {...register("carLicence")}
             isRequired
-            type="text"
+            label="Immatriculation"
             pattern="[A-Z]{2}-[0-9]{3}-[A-Z]{2}"
             placeholder="AA-123-BB"
-            label="Immatriculation"
+            type="text"
           />
           <Input {...register("carVin")} isRequired label="Numéro VIN" />
         </div>
@@ -236,13 +242,13 @@ export default function CarPart({ onPrevious, formData, isStandalone }: Props) {
 
         <div className="flex justify-between pt-4">
           {!isStandalone && (
-            <Button type="button" variant="light" onClick={onPrevious}>
+            <Button type="button" variant="light" onPress={onPrevious}>
               Retour
             </Button>
           )}
           <div className="flex gap-2">
             {!isStandalone && (
-              <Button type="button" variant="ghost" onClick={skipStep}>
+              <Button type="button" variant="ghost" onPress={skipStep}>
                 Passer cette étape
               </Button>
             )}

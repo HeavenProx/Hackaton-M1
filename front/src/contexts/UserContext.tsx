@@ -1,4 +1,10 @@
-import { createContext, useState, useEffect, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from "react";
 
 import { User, UserContextType } from "@/types/user";
 
@@ -45,13 +51,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const users = await userRes.json();
     const matchedUser = users["member"].find((u: any) => u.email === email);
+
     if (!matchedUser) throw new Error("Utilisateur non trouvé");
 
     setUser(matchedUser);
     setToken(token);
     setIsAuthenticated(true);
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(matchedUser));
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(matchedUser));
   };
 
   const register = async (
@@ -65,7 +72,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     isDriver?: boolean,
     driverFirstname?: string,
     driverLastname?: string,
-    driverPhoneNumber?: string,
+    driverPhoneNumber?: string
   ): Promise<void> => {
     try {
       const res = await fetch("http://127.0.0.1:8000/users", {
@@ -91,7 +98,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
         if (errorData.violations && Array.isArray(errorData.violations)) {
           const violation = errorData.violations.find(
-            (v) => v.propertyPath === "email",
+            (v) => v.propertyPath === "email"
           );
 
           if (violation) {
@@ -131,8 +138,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     setIsAuthenticated(false);
     setIsLoading(false);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   const updateUser = async (): Promise<void> => {
@@ -146,7 +153,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       });
 
       const data = await userRes.json();
-      const updatedUser = data["member"].find((u: any) => u.email === user.email);
+      const updatedUser = data["member"].find(
+        (u: any) => u.email === user.email
+      );
 
       if (!updatedUser) return;
 
@@ -156,7 +165,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       console.error("Erreur lors du rafraîchissement de l'utilisateur :", err);
     }
   };
-
 
   // Value object that will be provided to consumers
   const value: UserContextType = {
