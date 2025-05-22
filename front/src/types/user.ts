@@ -22,9 +22,17 @@ export type UserContextType = {
   // Functions
   login: (email: string, password: string) => Promise<void>;
   register: (
-    username: string,
     email: string,
     password: string,
+    firstname?: string,
+    lastname?: string,
+    phoneNumber?: string,
+    title?: string,
+    societyName?: string,
+    isDriver?: boolean,
+    driverFirstname?: string,
+    driverLastname?: string,
+    driverPhoneNumber?: string
   ) => Promise<void>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => Promise<void>;

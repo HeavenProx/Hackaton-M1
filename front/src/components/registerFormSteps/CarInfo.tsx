@@ -158,9 +158,10 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
                 {filteredBrands.map((brand, i) => (
                   <li
                     key={i}
-                    className="px-3 py-2 cursor-pointer hover:bg-blue-100"
+                    className="cursor-pointer hover:bg-blue-100"
                   >
                     <button
+                      className="w-full px-3 py-2 text-start"
                       onClick={() => {
                         setBrandInput(brand);
                         setValue("carBrand", brand);
@@ -190,9 +191,10 @@ export default function CarInfo({ onPrevious, formData, isStandalone }: Props) {
                   {filteredModels.map((model, i) => (
                     <li
                       key={i}
-                      className="px-3 py-2 cursor-pointer hover:bg-blue-100"
+                      className="cursor-pointer hover:bg-blue-100"
                     >
                       <button
+                        className="w-full px-3 py-2 text-start"
                         onClick={() => {
                           setModelInput(model);
                           setValue("carModel", model);

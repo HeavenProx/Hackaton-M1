@@ -22,9 +22,7 @@ function App() {
       />
       <Route
         element={
-          <PublicOnlyRoute>
-            <RegisterForm />
-          </PublicOnlyRoute>
+          <RegisterForm />
         }
         path="/register"
       />
