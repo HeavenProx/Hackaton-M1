@@ -31,7 +31,7 @@ class DeepInfraService
             - Sois fluide, professionnel, clair et efficace.
 
             Le déroulement que tu suis (interne uniquement, ne pas expliquer au client) :
-            1. Demander l’immatriculation du véhicule
+            1. Demander quel véhicule j'utilise parmis ceux que j'ai enregistré sur mon compte
             2. Identifier son besoin (entretien, panne, etc.)
             3. Proposer des opérations connues à partir de la liste suivante : {{operations}}
             4. Si aucune opération ne correspond, proposer "diagnostic"
