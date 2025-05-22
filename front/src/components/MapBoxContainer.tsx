@@ -1,9 +1,11 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
-import { dealerships } from "@/data/dealerships";
+import fetchDealerships from "@/data/dealerships";
 import { MapBoxContainerProps } from "@/types/mapBoxContainer";
+import { Dealership } from "@/types/dealership";
+import { useUser } from "@/contexts/UserContext";
 
 export default function MapBoxContainer({
   selectedDealership,
@@ -14,6 +16,32 @@ export default function MapBoxContainer({
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const markersRef = useRef<{ [key: string]: mapboxgl.Marker }>({});
   const locationMarkerRef = useRef<mapboxgl.Marker | null>(null);
+  const [dealerships, setDealerships] =
+    useState<Dealership[]>(fetchDealerships);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { token } = useUser();
+
+  // Fetch dealerships from API
+  useEffect(() => {
+    const loadDealerships = async () => {
+      setIsLoading(true);
+      try {
+        if (!token) {
+          console.error("No token available");
+
+          return;
+        }
+        setDealerships(fetchDealerships);
+      } catch (error) {
+        console.error("Error loading dealerships:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDealerships();
+  }, []);
 
   useEffect(() => {
     if (!mapContainerRef.current) {
@@ -26,31 +54,11 @@ export default function MapBoxContainer({
       zoom: 5,
     });
 
-    // Add markers for each dealership once the map is loaded
+    // Add markers for each dealership once the map is loaded and dealerships are fetched
     mapRef.current.on("load", () => {
-      dealerships.forEach((dealership) => {
-        const marker = new mapboxgl.Marker({
-          color:
-            selectedDealership?.dealership_name === dealership.dealership_name
-              ? "#0072F5"
-              : "#666666",
-        })
-          .setLngLat([dealership.longitude, dealership.latitude])
-          .addTo(mapRef.current as mapboxgl.Map);
-
-        markersRef.current[dealership.dealership_name] = marker;
-
-        const el = marker.getElement();
-
-        if (el) {
-          // Add click event listener to the marker element
-          el.addEventListener("click", () => {
-            if (onDealershipSelect) {
-              onDealershipSelect(dealership);
-            }
-          });
-        }
-      });
+      if (!isLoading) {
+        addDealershipMarkers();
+      }
     });
 
     return () => {
@@ -58,7 +66,49 @@ export default function MapBoxContainer({
         mapRef.current.remove();
       }
     };
-  }, []);
+  }, [isLoading]);
+
+  // Add markers when dealerships are loaded
+  useEffect(() => {
+    if (mapRef.current && mapRef.current.loaded() && !isLoading) {
+      addDealershipMarkers();
+    }
+  }, [dealerships, isLoading]);
+
+  const addDealershipMarkers = () => {
+    if (!mapRef.current) return;
+
+    // Clear existing markers
+    Object.values(markersRef.current).forEach((marker) => marker.remove());
+    markersRef.current = {};
+
+    dealerships.forEach((dealership) => {
+      const marker = new mapboxgl.Marker({
+        color:
+          selectedDealership?.dealership_name === dealership.dealership_name
+            ? "#0072F5"
+            : "#666666",
+      })
+        .setLngLat([
+          parseFloat(dealership.longitude),
+          parseFloat(dealership.latitude),
+        ])
+        .addTo(mapRef.current as mapboxgl.Map);
+
+      markersRef.current[dealership.dealership_name] = marker;
+
+      const el = marker.getElement();
+
+      if (el) {
+        // Add click event listener to the marker element
+        el.addEventListener("click", () => {
+          if (onDealershipSelect) {
+            onDealershipSelect(dealership);
+          }
+        });
+      }
+    });
+  };
 
   // Update marker colors when selected dealership changes
   useEffect(() => {
@@ -78,7 +128,10 @@ export default function MapBoxContainer({
           const newMarker = new mapboxgl.Marker({
             color: color,
           })
-            .setLngLat([dealership.longitude, dealership.latitude])
+            .setLngLat([
+              parseFloat(dealership.longitude),
+              parseFloat(dealership.latitude),
+            ])
             .addTo(mapRef.current);
 
           // Update the reference
@@ -99,12 +152,15 @@ export default function MapBoxContainer({
     // Center map on selected dealership if one is selected
     if (selectedDealership && mapRef.current) {
       mapRef.current.flyTo({
-        center: [selectedDealership.longitude, selectedDealership.latitude],
+        center: [
+          parseFloat(selectedDealership.longitude),
+          parseFloat(selectedDealership.latitude),
+        ],
         zoom: 12,
         essential: true,
       });
     }
-  }, [selectedDealership, onDealershipSelect]);
+  }, [selectedDealership, onDealershipSelect, dealerships]);
 
   // Handle the selected location from LocationSearch
   useEffect(() => {

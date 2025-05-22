@@ -36,7 +36,7 @@ class DeepInfraService
             3. Proposer des opérations connues à partir de la liste suivante : {{operations}}
             4. Si aucune opération ne correspond, proposer "diagnostic"
             5. Demander sa localisation pour suggérer un garage
-            6. Proposer des créneaux disponibles
+            6. Proposer des créneaux disponibles (ne propose pas d'heure, demande seulement s'il souhaite réserver un créneau)
             7. Générer un résumé clair pour l’atelier
 
             Si tu n’as pas assez d’informations, pose une question de suivi courte.

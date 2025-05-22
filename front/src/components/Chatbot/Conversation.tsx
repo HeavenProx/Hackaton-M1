@@ -3,9 +3,10 @@ import {
   Card,
   CardBody,
   Button,
+  Checkbox,
   useDisclosure,
 } from "@heroui/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import NearbyGarageSelector from "../NearbyGarageSelector";
 import GarageSlotSelector from "../GarageSlotSelector";
@@ -13,6 +14,7 @@ import GarageSlotSelector from "../GarageSlotSelector";
 import { Message } from "@/hooks/useChatbot";
 import { Dealership } from "@/types/dealership";
 import { useUser } from "@/contexts/UserContext";
+import {Link} from "@heroui/link";
 
 type Props = {
   messages: Message[];
@@ -22,6 +24,7 @@ type Props = {
 
 const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   const { user } = useUser();
   const garageSelectionDisclosure = useDisclosure();
@@ -42,21 +45,40 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
   const handleDealershipConfirm = (dealership: Dealership) => {
     if (onOptionSelect) {
       // Send the dealership name back to the conversation
-      onOptionSelect(`J'ai choisi le garage: ${dealership.dealership_name}`);
+      onOptionSelect(
+        `J'ai choisi le garage n° ${dealership.id} : ${dealership.dealership_name}`,
+      );
     }
   };
 
-  const handleSlotConfirm = (slotInfo: {
-    day: string;
-    slot: string;
-    formattedDate: string;
+  const handleSlotConfirm = async (slotInfo: {
+      day: string;
+      slot: string;
+      formattedDate: string;
   }) => {
-    if (onOptionSelect) {
-      // Send the selected slot back to the conversation
-      onOptionSelect(
-        `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`
-      );
-    }
+      if (onOptionSelect) {
+          // Send the selected slot back to the conversation
+          if (slotInfo.day !== "Aucun créneau") {
+              onOptionSelect(
+                  `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`
+              );
+          } else {
+              onOptionSelect(
+                  `Je souhaite être recontacté par mail.`
+              );
+              let token = localStorage.getItem("token");
+              const formData = new FormData();
+
+              formData.append("emailClient", user?.email);
+              const response = await fetch("http://localhost:8000/api/send-mail-rdv", {
+                  headers: {
+                      Authorization: `Bearer ${token}`, // Add the token in the header
+                  },
+                  method: "POST",
+                  body: formData,
+              });
+          }
+      }
   };
 
   const handlePlateSelect = (plate: string, brand: string, model: string) => {
@@ -84,22 +106,50 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                 <p className="whitespace-pre-wrap">{message.content}</p>
                 {message.role === "system" &&
                   message.action === "select_operations" &&
-                  message.options &&
-                  message.options.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2 max-w-[80%]">
-                      {message.options.map((option, optionIndex) => (
-                        <Button
-                          key={optionIndex}
-                          color="primary"
-                          size="sm"
-                          variant="flat"
-                          onPress={() => handleOptionClick(option)}
-                        >
-                          {option}
-                        </Button>
-                      ))}
+                  message.options?.length > 0 && (
+                    <div className="flex flex-col gap-3 mt-3">
+                      <div className="flex flex-wrap gap-2">
+                        {message.options.map((option, idx) => {
+                          const isSelected = selectedOptions.includes(option);
+
+                          return (
+                            <Button
+                              key={idx}
+                              variant={isSelected ? "solid" : "flat"}
+                              color={isSelected ? "primary" : "default"}
+                              onPress={() =>
+                                setSelectedOptions((prev) =>
+                                  isSelected
+                                    ? prev.filter((o) => o !== option)
+                                    : [...prev, option]
+                                )
+                              }
+                            >
+                              {isSelected ? "✅ " : ""}{option}
+                            </Button>
+                          );
+                        })}
+
+                        {selectedOptions.length > 0 && (
+                          <Button
+                            color="success"
+                            className="self-start text-white {
+                            
+                          }"
+                            onPress={() => {
+                              handleOptionClick(
+                                `J'ai sélectionné : ${selectedOptions.join(", ")}`
+                              );
+                              setSelectedOptions([]); // Reset après validation
+                            }}
+                          >
+                            Valider ma sélection
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  )}
+                  )
+                }
 
                 {message.action === "ask_plate" &&
                   user?.cars?.length &&
@@ -120,6 +170,20 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                       ))}
                     </div>
                   )}
+                  {message.action === "ask_plate" &&
+                      user?.cars?.length === 0 && (
+                          <div className="flex flex-col gap-2 items-start">
+                              <Button
+                                  as={Link}
+                                  key={index}
+                                  className="text-left w-full"
+                                  variant="flat"
+                                  href={"/add-vehicle"}
+                              >
+                                  Créer un nouveau véhicule
+                              </Button>
+                          </div>
+                      )}
 
                 {message.role === "system" &&
                   message.action === "ask_location" && (

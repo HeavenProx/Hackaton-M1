@@ -8,6 +8,7 @@ import {
   ModalFooter,
 } from "@heroui/modal";
 import { ScrollShadow } from "@heroui/scroll-shadow";
+import { Spinner } from "@heroui/react";
 
 import MapBoxContainer from "./MapBoxContainer";
 import GarageInfoCard from "./GarageInfoCard";
@@ -15,7 +16,8 @@ import LocationSearch from "./LocationSearch";
 
 import { NearbyGarageSelectorProps } from "@/types/components";
 import { Dealership } from "@/types/dealership";
-import { dealerships } from "@/data/dealerships";
+import fetchDealerships from "@/data/dealerships";
+import { useUser } from "@/contexts/UserContext";
 
 export default function NearbyGarageSelector({
   disclosure,
@@ -29,8 +31,40 @@ export default function NearbyGarageSelector({
     longitude: number;
     latitude: number;
   } | null>(null);
+  const [dealerships, setDealerships] = useState<Dealership[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef(dealerships.map(() => createRef<HTMLDivElement>()));
+  const cardRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
+
+  const { token } = useUser();
+
+  // Fetch dealerships when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const loadDealerships = async () => {
+        setIsLoading(true);
+        try {
+          if (!token) {
+            console.error("No token available");
+
+            return;
+          }
+
+          setDealerships(fetchDealerships);
+          // Initialize cardRefs with the correct number of refs
+          cardRefs.current = fetchDealerships.map(() =>
+            createRef<HTMLDivElement>(),
+          );
+        } catch (error) {
+          console.error("Error loading dealerships:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      loadDealerships();
+    }
+  }, [isOpen]);
 
   const handleDealershipSelect = (dealership: Dealership) => {
     setSelectedDealership(dealership);
@@ -61,7 +95,7 @@ export default function NearbyGarageSelector({
         (d) => d.dealership_name === selectedDealership.dealership_name,
       );
 
-      if (selectedIndex !== -1 && cardRefs.current[selectedIndex].current) {
+      if (selectedIndex !== -1 && cardRefs.current[selectedIndex]?.current) {
         const card = cardRefs.current[selectedIndex].current;
         const scrollContainer = scrollContainerRef.current;
 
@@ -78,7 +112,7 @@ export default function NearbyGarageSelector({
         }
       }
     }
-  }, [selectedDealership]);
+  }, [selectedDealership, dealerships]);
 
   return (
     <>
@@ -119,25 +153,32 @@ export default function NearbyGarageSelector({
                       : "Sélectionnez un garage sur la carte ou dans la liste ci-dessous"}
                   </h3>
 
-                  <ScrollShadow
-                    ref={scrollContainerRef}
-                    orientation="horizontal"
-                  >
-                    <div className="flex gap-4 m-2">
-                      {dealerships.map((dealership, index) => (
-                        <GarageInfoCard
-                          key={dealership.dealership_name}
-                          cardRef={cardRefs.current[index]}
-                          dealership={dealership}
-                          isSelected={
-                            selectedDealership?.dealership_name ===
-                            dealership.dealership_name
-                          }
-                          onSelect={handleDealershipSelect}
-                        />
-                      ))}
+                  {isLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                      <Spinner color="primary" size="lg" />
+                      <span className="ml-2">Chargement des garages...</span>
                     </div>
-                  </ScrollShadow>
+                  ) : (
+                    <ScrollShadow
+                      ref={scrollContainerRef}
+                      orientation="horizontal"
+                    >
+                      <div className="flex gap-4 m-2">
+                        {dealerships.map((dealership, index) => (
+                          <GarageInfoCard
+                            key={dealership.dealership_name}
+                            cardRef={cardRefs.current[index]}
+                            dealership={dealership}
+                            isSelected={
+                              selectedDealership?.dealership_name ===
+                              dealership.dealership_name
+                            }
+                            onSelect={handleDealershipSelect}
+                          />
+                        ))}
+                      </div>
+                    </ScrollShadow>
+                  )}
                 </div>
               </ModalBody>
               <ModalFooter>

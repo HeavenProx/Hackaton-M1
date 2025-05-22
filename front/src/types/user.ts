@@ -4,16 +4,16 @@ import { Car } from "@/types/car";
 export type User = {
   "@id": string;
   username: string;
-  password: string,
-  firstname?: string,
-  lastname?: string,
-  phoneNumber?: string,
-  title?: string,
-  societyName?: string,
-  isDriver?: boolean,
-  driverFirstname?: string,
-  driverLastname?: string,
-  driverPhoneNumber?: string,
+  password: string;
+  firstname?: string;
+  lastname?: string;
+  phoneNumber?: string;
+  title?: string;
+  societyName?: string;
+  isDriver?: boolean;
+  driverFirstname?: string;
+  driverLastname?: string;
+  driverPhoneNumber?: string;
   cars: Car[];
 };
 

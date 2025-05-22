@@ -13,6 +13,11 @@ api_send_mail:
   controller: App\Controller\SendEmailController
   methods: [POST]
 
+api_send_rdv:
+  path: /api/send-mail-rdv
+  controller: App\Controller\SendEmailRdvController
+  methods: [POST]
+
 api_interventions:
   path: /api/interventions
   controller: App\Controller\CreateInterventionsController
