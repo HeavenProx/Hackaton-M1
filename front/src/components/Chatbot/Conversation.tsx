@@ -12,6 +12,7 @@ import GarageSlotSelector from "../GarageSlotSelector";
 
 import { Message } from "@/hooks/useChatbot";
 import { Dealership } from "@/types/dealership";
+import { useUser } from "@/contexts/UserContext";
 
 type Props = {
   messages: Message[];
@@ -22,6 +23,7 @@ type Props = {
 const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const { user } = useUser();
   const garageSelectionDisclosure = useDisclosure();
   const slotSelectionDisclosure = useDisclosure();
 
@@ -52,8 +54,15 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
     if (onOptionSelect) {
       // Send the selected slot back to the conversation
       onOptionSelect(
-        `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`,
+        `J'ai choisi le créneau: ${slotInfo.day} à ${slotInfo.slot}`
       );
+    }
+  };
+
+  const handlePlateSelect = (plate: string) => {
+    if (onOptionSelect) {
+      // Send the selected plate back to the conversation
+      onOptionSelect(`J'ai choisi la plaque: ${plate}`);
     }
   };
 
@@ -94,6 +103,24 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                       ))}
                     </div>
                   )}
+
+                {message.action === "ask_plate" &&
+                  user?.cars?.length &&
+                  user?.cars?.length > 0 && (
+                    <div className="flex flex-col gap-2 items-start">
+                      {user?.cars.map((car: any, index: number) => (
+                        <Button
+                          key={index}
+                          className="text-left w-full"
+                          variant="flat"
+                          onPress={() => handlePlateSelect(car.registration)}
+                        >
+                          🚗 {car.brand} {car.model} — {car.registration}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+
                 {message.role === "system" &&
                   message.action === "ask_location" && (
                     <div className="flex flex-wrap gap-2 mt-2 max-w-[80%]">
