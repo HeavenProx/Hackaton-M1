@@ -77,6 +77,6 @@ class CreateInterventionsController
         $entityManager->persist($intervention);
         $entityManager->flush();
 
-        return new JsonResponse(['message' => 'Intervention created successfully'], Response::HTTP_CREATED);
+        return new JsonResponse(['message' => 'Intervention created successfully', "id"=> $intervention->getId()], Response::HTTP_CREATED);
     }
 }

@@ -221,6 +221,8 @@ export default function PDFButton({ interventionId }: PDFButtonProps) {
       {({ loading }) => (
         <Button
           color="primary"
+          variant={"flat"}
+          size="sm"
           isLoading={loading || isGenerating}
           onClick={handleDownloadClick}
         >

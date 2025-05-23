@@ -15,6 +15,7 @@ import { Message } from "@/hooks/useChatbot";
 import { Dealership } from "@/types/dealership";
 import { useUser } from "@/contexts/UserContext";
 import {Link} from "@heroui/link";
+import PDFButton from "@/components/PdfGenerate.tsx";
 
 type Props = {
   messages: Message[];
@@ -226,6 +227,13 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                       />
                     </div>
                   )}
+
+                  {message.role === "system" &&
+                      message.action === "confirm_appointment" && (
+                          <div className="flex flex-wrap gap-2 mt-2 max-w-[80%]">
+                              <PDFButton  interventionId={localStorage.getItem("interventionId")} />
+                          </div>
+                      )}
               </CardBody>
             </Card>
           </div>

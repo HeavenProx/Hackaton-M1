@@ -53,7 +53,7 @@ export const useChatbot = ({ onSuccess, onError }: Params) => {
 
       if (data["response"]["diagnostic"]){
           localStorage.setItem("diagnostic", data["response"]["diagnostic"]);
-          await fetch("http://127.0.0.1:8000/api/interventions", {
+          const interventionResponse = await fetch("http://127.0.0.1:8000/api/interventions", {
               method: "POST",
               headers: {
                   "Content-Type": "application/ld+json",
@@ -67,6 +67,13 @@ export const useChatbot = ({ onSuccess, onError }: Params) => {
                   "date": formatIsoToDatetime(localStorage.getItem("date")),
               }),
           });
+
+          const interventionData = await interventionResponse.json();
+
+          // Stocker l'ID de l'intervention dans le localStorage
+          if (interventionData.id) {
+              localStorage.setItem("interventionId", interventionData.id.toString());
+          }
     }
 
       return data.response;
