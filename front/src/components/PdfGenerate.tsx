@@ -209,7 +209,7 @@ export default function PDFButton({ interventionId }: PDFButtonProps) {
   };
 
   if (!data) {
-    return <p>Loading...</p>;
+    return <p>Chargement du document...</p>;
   }
 
   return (

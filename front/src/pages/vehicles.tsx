@@ -288,28 +288,35 @@ export const VehiclesPage = () => {
 
             {carHistory && (
                 <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white dark:bg-default-100 p-8 rounded-xl shadow-xl max-w-5xl w-full space-y-6">
+                    <div className="bg-white dark:bg-default-100 p-8 rounded-xl shadow-xl max-w-5xl w-full max-h-[90vh] flex flex-col space-y-6">
+                        {/* Header fixe */}
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-bold">Historique des interventions</h2>
                             <Button variant="ghost" onPress={() => setCarHistory(null)}>Fermer</Button>
                         </div>
-                        {loadingInterventions ? (
-                            <p className="text-center">Chargement des interventions...</p>
-                        ) : carInterventions.length === 0 ? (
-                            <p className="text-center text-default-500">Aucune intervention trouvée pour ce véhicule.</p>
-                        ) : (
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm border rounded-md">
-                                    <thead className="bg-gray-100 dark:bg-default-50">
+
+                        {/* Contenu scrollable */}
+                        <div className="overflow-y-auto flex-1">
+                            <table className="w-full text-sm border rounded-md table-fixed">
+                                <thead className="bg-gray-100 dark:bg-default-50 sticky top-0 z-10">
+                                <tr>
+                                    <th className="px-4 py-2 text-left">Date</th>
+                                    <th className="px-4 py-2 text-left">Description</th>
+                                    <th className="px-4 py-2 text-left">Garage</th>
+                                    <th className="px-4 py-2 text-left">Compte rendu</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {loadingInterventions ? (
                                     <tr>
-                                        <th className="px-4 py-2 text-left">Date</th>
-                                        <th className="px-4 py-2 text-left">Description</th>
-                                        <th className="px-4 py-2 text-left">Garage</th>
-                                        <th className="px-4 py-2 text-left">Compte rendu</th>
+                                        <td colSpan={4} className="text-center py-4">Chargement des interventions...</td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    {carInterventions.map((intervention: any) => (
+                                ) : carInterventions.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={4} className="text-center text-default-500 py-4">Aucune intervention trouvée pour ce véhicule.</td>
+                                    </tr>
+                                ) : (
+                                    carInterventions.map((intervention: any) => (
                                         <tr key={intervention["@id"]} className="border-t">
                                             <td className="px-4 py-2">{formatDate(intervention.date)}</td>
                                             <td className="px-4 py-2">{intervention.diagnostic}</td>
@@ -318,11 +325,11 @@ export const VehiclesPage = () => {
                                                 <PDFButton interventionId={intervention["@id"].split("/")[2]} />
                                             </td>
                                         </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                                    ))
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             )}

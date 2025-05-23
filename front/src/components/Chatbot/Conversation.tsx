@@ -119,7 +119,9 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                             <Button
                               key={idx}
                               variant={isSelected ? "solid" : "flat"}
-                              color={isSelected ? "primary" : "default"}
+                              color={isSelected ? "primary" : "primary"}
+
+                              size={"sm"}
                               onPress={() =>
                                 setSelectedOptions((prev) =>
                                   isSelected
@@ -186,6 +188,8 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                                   key={index}
                                   className="text-left w-full"
                                   variant="flat"
+                                  color="primary"
+                                  size={"sm"}
                                   href={"/add-vehicle"}
                               >
                                   Créer un nouveau véhicule
@@ -214,9 +218,9 @@ const Conversation = ({ messages, isLoading, onOptionSelect }: Props) => {
                   message.action === "select_schedule" && (
                     <div className="flex flex-wrap gap-2 mt-2 max-w-[80%]">
                       <Button
-                        color="primary"
                         size="sm"
                         variant="flat"
+                        color="primary"
                         onPress={slotSelectionDisclosure.onOpen}
                       >
                         Choisir un créneau
